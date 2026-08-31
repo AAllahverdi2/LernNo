@@ -20,12 +20,22 @@ app.get('/', (_req, res) => {
     status: 'ok',
     message: '🚀 LernNo Node.js Express REST API Server is Live on Vercel!',
     swaggerDocs: '/api-docs',
+    swaggerJson: '/api-docs-json',
     healthCheck: '/api/health',
   });
 });
 
+// Serve raw Swagger JSON
+app.get('/api-docs-json', (_req, res) => {
+  res.json(swaggerSpec);
+});
+
 // Interactive Swagger UI Documentation Route
-app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
+try {
+  app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
+} catch (err) {
+  console.error('Swagger UI init error:', err);
+}
 
 // API Routes
 app.use('/api/auth', authRoutes);
@@ -36,7 +46,7 @@ app.get('/api/health', (_req, res) => {
   res.json({ status: 'ok', message: 'LernNo Node.js Express API Server Running' });
 });
 
-if (process.env.NODE_ENV !== 'production') {
+if (process.env.NODE_ENV !== 'production' && !process.env.VERCEL) {
   app.listen(PORT, () => {
     console.log(`🚀 LernNo Backend Server running on http://localhost:${PORT}`);
     console.log(`📚 Interactive Swagger UI Docs available at http://localhost:${PORT}/api-docs`);
