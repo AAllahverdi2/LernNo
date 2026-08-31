@@ -23,7 +23,7 @@ export const AdminUsersPage: React.FC = () => {
         setUsers(list);
       } else {
         setUsers([
-          { id: '1', name: 'Lexora Super Admin', email: 'admin@lexora.com', role: 'ADMIN' },
+          { id: '1', name: 'Allahverdi Ağamalıyev (Super Admin)', email: 'agamaliyevallahverdii@gmail.com', role: 'ADMIN' },
           { id: '2', name: 'Dr. Markus Weber', email: 'teacher@demo.com', role: 'TEACHER' },
           { id: '3', name: 'Anna Miller', email: 'student@demo.com', role: 'STUDENT' },
         ]);
@@ -45,15 +45,15 @@ export const AdminUsersPage: React.FC = () => {
         <div>
           <h1 className="text-2xl font-extrabold text-white flex items-center gap-2.5">
             <ShieldCheck className="w-7 h-7 text-rose-400" />
-            Admin User Management
+            Admin İstifadəçilərin İdarə Olunması
           </h1>
           <p className="text-xs text-slate-400 mt-1">
-            Manage all registered site accounts, promote teachers or students, and inspect authentication records.
+            Qeydiyyatdan keçmiş bütün Məllim, Tələbə və Admin istifadəçilərinin siyahısı və rolları.
           </p>
         </div>
 
-        <Button size="sm" variant="outline" leftIcon={<RefreshCw className="w-4 h-4" />} onClick={fetchUsers}>
-          Refresh Directory
+        <Button size="sm" variant="outline" leftIcon={<RefreshCw className="w-4 h-4" />} onClick={fetchUsers} isLoading={isLoading}>
+          Yenilə (Refresh)
         </Button>
       </div>
 
@@ -64,16 +64,28 @@ export const AdminUsersPage: React.FC = () => {
       )}
 
       {isLoading ? (
-        <div className="p-8 text-center text-slate-400">Loading registered users from backend...</div>
+        /* Skeleton Loading UI for instant UX */
+        <div className="space-y-3">
+          {[1, 2, 3, 4].map((i) => (
+            <div key={i} className="h-16 rounded-2xl bg-slate-900/60 border border-slate-800 animate-pulse flex items-center px-6 justify-between">
+              <div className="flex items-center gap-3">
+                <div className="w-9 h-9 rounded-full bg-slate-800" />
+                <div className="h-4 w-32 bg-slate-800 rounded-md" />
+              </div>
+              <div className="h-4 w-40 bg-slate-800 rounded-md" />
+              <div className="h-6 w-20 bg-slate-800 rounded-lg" />
+            </div>
+          ))}
+        </div>
       ) : (
         <Table>
           <TableHeader>
             <TableRow>
-              <TableHead>User Profile</TableHead>
-              <TableHead>Email Address</TableHead>
-              <TableHead>Assigned Role</TableHead>
-              <TableHead>Registered Date</TableHead>
-              <TableHead className="text-right">Actions</TableHead>
+              <TableHead>İstifadəçi Profili</TableHead>
+              <TableHead>E-poçt Ünvanı</TableHead>
+              <TableHead>Təyin Olunmuş Rol</TableHead>
+              <TableHead>Qeydiyyat Tarixi</TableHead>
+              <TableHead className="text-right">Status</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
@@ -100,10 +112,10 @@ export const AdminUsersPage: React.FC = () => {
                   </span>
                 </TableCell>
                 <TableCell className="text-xs text-slate-400">
-                  {userItem.createdAt ? new Date(userItem.createdAt).toLocaleDateString() : 'Active'}
+                  {userItem.createdAt ? new Date(userItem.createdAt).toLocaleDateString() : 'Aktiv'}
                 </TableCell>
                 <TableCell className="text-right">
-                  <Badge variant="success">Active</Badge>
+                  <Badge variant="success">Aktiv</Badge>
                 </TableCell>
               </TableRow>
             ))}
