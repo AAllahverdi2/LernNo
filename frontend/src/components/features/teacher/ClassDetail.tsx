@@ -184,7 +184,7 @@ export const ClassDetail: React.FC = () => {
                 </TableRow>
               </TableHeader>
               <TableBody>
-                {classDetail.students.map((student) => (
+                {classDetail.students.map((student: any) => (
                   <TableRow key={student.id}>
                     <TableCell>
                       <div className="flex items-center gap-3">
@@ -233,7 +233,7 @@ export const ClassDetail: React.FC = () => {
               </TableRow>
             </TableHeader>
             <TableBody>
-              {classDetail.students.map((student) => (
+              {classDetail.students.map((student: any) => (
                 <TableRow key={student.id}>
                   <TableCell>
                     <div className="flex items-center gap-3">

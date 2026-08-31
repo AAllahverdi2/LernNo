@@ -3,6 +3,7 @@ import cors from 'cors';
 import dotenv from 'dotenv';
 import authRoutes from './routes/authRoutes';
 import adminRoutes from './routes/adminRoutes';
+import classRoutes from './routes/classRoutes';
 import { swaggerSpec } from './config/swagger';
 
 dotenv.config();
@@ -67,6 +68,7 @@ app.get('/api-docs', (_req, res) => {
 // API Routes
 app.use('/api/auth', authRoutes);
 app.use('/api/admin', adminRoutes);
+app.use('/api/classes', classRoutes);
 
 // Health check endpoint
 app.get('/api/health', (_req, res) => {

@@ -1,55 +1,111 @@
-import type { ClassItem, LessonSummary } from '../types';
-import { mockClasses } from '../data/mockClasses';
+const API_BASE_URL = import.meta.env.VITE_API_URL || 'https://lern-no.vercel.app/api';
 
-const delay = (ms = 150) => new Promise((resolve) => setTimeout(resolve, ms));
+export interface CreateClassPayload {
+  name: string;
+  language: string;
+  level: string;
+  schedule?: string;
+  description?: string;
+}
 
-let localClasses = [...mockClasses];
+export interface AddStudentPayload {
+  email: string;
+}
+
+export interface AddVocabularyPayload {
+  word: string;
+  translation: string;
+  article?: string;
+  plural?: string;
+  exampleSentence: string;
+  topic?: string;
+  difficulty?: string;
+}
+
+export interface CreateQuizPayload {
+  title: string;
+  totalQuestions?: number;
+  passingScore?: number;
+}
 
 export const classService = {
-  async getClasses(): Promise<ClassItem[]> {
-    await delay();
-    return [...localClasses];
+  // Create a new class / group
+  async createClass(token: string, data: CreateClassPayload) {
+    const response = await fetch(`${API_BASE_URL}/classes`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${token}`,
+      },
+      body: JSON.stringify(data),
+    });
+    const result = await response.json();
+    if (!response.ok) throw new Error(result.message || 'Qrup yaradıla bilmədi.');
+    return result.class;
   },
 
-  async getClassById(classId: string): Promise<ClassItem | undefined> {
-    await delay();
-    return localClasses.find((c) => c.id === classId);
+  // Get all teacher classes
+  async getTeacherClasses(token: string) {
+    const response = await fetch(`${API_BASE_URL}/classes`, {
+      headers: { Authorization: `Bearer ${token}` },
+    });
+    const result = await response.json();
+    if (!response.ok) throw new Error(result.message || 'Qruplar yüklənə bilmədi.');
+    return result.classes;
   },
 
-  async createClass(newClass: Partial<ClassItem>): Promise<ClassItem> {
-    await delay(300);
-    const created: ClassItem = {
-      id: `class-${Date.now()}`,
-      name: newClass.name || 'New Class',
-      language: newClass.language || 'German',
-      level: newClass.level || 'A2',
-      teacherId: 'teacher-1',
-      studentCount: 0,
-      vocabularyCount: 0,
-      averageProgress: 0,
-      lastActivity: 'Just now',
-      description: newClass.description || '',
-      students: [],
-      color: 'from-blue-500/20 to-indigo-500/20 border-blue-500/30',
-    };
-    localClasses = [created, ...localClasses];
-    return created;
+  // Get detailed info for a single class
+  async getClassDetail(token: string, classId: string) {
+    const response = await fetch(`${API_BASE_URL}/classes/${classId}`, {
+      headers: { Authorization: `Bearer ${token}` },
+    });
+    const result = await response.json();
+    if (!response.ok) throw new Error(result.message || 'Qrup detalları yüklənə bilmədi.');
+    return result.class;
   },
 
-  async getTodayLessonSummary(classId: string): Promise<LessonSummary> {
-    await delay();
-    const cls = localClasses.find((c) => c.id === classId) || localClasses[0];
-    return {
-      classId: cls.id,
-      className: cls.name,
-      dayNumber: 4,
-      topic: 'Travel & Transportation',
-      newWordsCount: 10,
-      reviewWordsCount: 15,
-      quizQuestionsCount: 10,
-      completedStudentsCount: 28,
-      totalStudentsCount: cls.studentCount || 40,
-      isPublished: true,
-    };
+  // Add a student to a class by email
+  async addStudentToClass(token: string, classId: string, email: string) {
+    const response = await fetch(`${API_BASE_URL}/classes/${classId}/students`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${token}`,
+      },
+      body: JSON.stringify({ email }),
+    });
+    const result = await response.json();
+    if (!response.ok) throw new Error(result.message || 'Tələbə əlavə edilə bilmədi.');
+    return result.enrollment;
+  },
+
+  // Add vocabulary / assignment to class
+  async addVocabularyToClass(token: string, classId: string, data: AddVocabularyPayload) {
+    const response = await fetch(`${API_BASE_URL}/classes/${classId}/vocabulary`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${token}`,
+      },
+      body: JSON.stringify(data),
+    });
+    const result = await response.json();
+    if (!response.ok) throw new Error(result.message || 'Söz/Tapşırıq əlavə edilə bilmədi.');
+    return result.word;
+  },
+
+  // Create Quiz in Class
+  async createQuizInClass(token: string, classId: string, data: CreateQuizPayload) {
+    const response = await fetch(`${API_BASE_URL}/classes/${classId}/quizzes`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${token}`,
+      },
+      body: JSON.stringify(data),
+    });
+    const result = await response.json();
+    if (!response.ok) throw new Error(result.message || 'Sınaq yaradıla bilmədi.');
+    return result.quiz;
   },
 };

@@ -196,7 +196,7 @@ export const TeacherDashboard: React.FC = () => {
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            {classes.slice(0, 2).map((cls) => (
+            {classes.slice(0, 2).map((cls: any) => (
               <Card key={cls.id} hoverEffect className="p-5 border-slate-800/90 flex flex-col justify-between">
                 <div>
                   <div className="flex items-start justify-between mb-3">

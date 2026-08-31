@@ -15,6 +15,7 @@ model User {
   email        String       @unique
   passwordHash String
   role         String       @default("STUDENT") // "TEACHER" | "STUDENT" | "ADMIN"
+  subject      String?      @default("Alman Dili") // "Alman Dili", "İngilis Dili", "Riyaziyyat", "Tarix", və s.
   avatar       String?
   streak       Int          @default(0)
   createdAt    DateTime     @default(now())
@@ -25,15 +26,17 @@ model User {
 
 model Class {
   id              String           @id @default(uuid())
-  name            String
-  language        String           @default("German")
+  name            String           // e.g. "1-3-5 Saat 14:00 Qrupu", "A2 Sınaq Qrupu"
+  language        String           @default("Alman Dili") // Fənn / Dil
   level           String           @default("A2")
+  schedule        String?          @default("1-3-5 Saat 14:00") // Dərs günləri və saatı
   description     String?
   teacherId       String
   teacher         User             @relation("TeacherClasses", fields: [teacherId], references: [id], onDelete: Cascade)
   createdAt       DateTime         @default(now())
   updatedAt       DateTime         @updatedAt
   vocabularyWords VocabularyWord[]
+  quizzes         Quiz[]
   enrollments     Enrollment[]
 }
 
@@ -62,4 +65,14 @@ model VocabularyWord {
   difficulty      String   @default("Medium")
   status          String   @default("Published")
   createdAt       DateTime @default(now())
+}
+
+model Quiz {
+  id             String   @id @default(uuid())
+  classId        String
+  class          Class    @relation(fields: [classId], references: [id], onDelete: Cascade)
+  title          String   // e.g. "A2 Sınaq İmtahanı #1"
+  totalQuestions Int      @default(10)
+  passingScore   Int      @default(70)
+  createdAt      DateTime @default(now())
 }

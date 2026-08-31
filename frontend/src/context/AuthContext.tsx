@@ -23,7 +23,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const [token, setToken] = useState<string | null>(() => localStorage.getItem('lernno_jwt_token'));
   const [user, setUser] = useState<User | null>(() => {
     const saved = localStorage.getItem('lernno_demo_user');
-    return saved ? JSON.parse(saved) : mockTeacherUser;
+    return saved ? JSON.parse(saved) : null;
   });
 
   const role: UserRole = user
@@ -32,7 +32,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       : user.role.toLowerCase() === 'teacher'
       ? 'teacher'
       : 'student'
-    : 'teacher';
+    : 'student';
 
   const login = async (credentials: { email: string; password: string }) => {
     const result = await authService.login(credentials);

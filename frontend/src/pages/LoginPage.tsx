@@ -1,13 +1,13 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
-import { BrainCircuit, UserCheck, Sparkles, ShieldCheck, ArrowRight, Lock, Mail, User as UserIcon } from 'lucide-react';
+import { BrainCircuit, ArrowRight, Lock, Mail, User as UserIcon } from 'lucide-react';
 import { Button } from '../components/common/Button';
 import { Input } from '../components/common/Input';
 import { Select } from '../components/common/Select';
 
 export const LoginPage: React.FC = () => {
-  const { login, register, loginAsTeacher, loginAsStudent, loginAsAdmin } = useAuth();
+  const { login, register } = useAuth();
   const navigate = useNavigate();
 
   const [mode, setMode] = useState<'login' | 'register'>('login');
@@ -80,7 +80,10 @@ export const LoginPage: React.FC = () => {
         {/* Tab Switcher (Giriş / Qeydiyyat) */}
         <div className="p-1 rounded-2xl bg-slate-900 border border-slate-800 flex">
           <button
-            onClick={() => setMode('login')}
+            onClick={() => {
+              setMode('login');
+              setErrorMessage('');
+            }}
             className={`flex-1 py-2.5 text-xs font-extrabold rounded-xl transition-all ${
               mode === 'login' ? 'bg-brand-600 text-white shadow-md' : 'text-slate-400 hover:text-white'
             }`}
@@ -88,7 +91,10 @@ export const LoginPage: React.FC = () => {
             Giriş et (Login)
           </button>
           <button
-            onClick={() => setMode('register')}
+            onClick={() => {
+              setMode('register');
+              setErrorMessage('');
+            }}
             className={`flex-1 py-2.5 text-xs font-extrabold rounded-xl transition-all ${
               mode === 'register' ? 'bg-brand-600 text-white shadow-md' : 'text-slate-400 hover:text-white'
             }`}
@@ -110,7 +116,7 @@ export const LoginPage: React.FC = () => {
               <Input
                 label="E-poçt Ünvanı"
                 type="email"
-                placeholder="teacher@demo.com və ya student@demo.com"
+                placeholder="E-poçt ünvanınızı daxil edin"
                 leftIcon={<Mail className="w-4 h-4" />}
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
@@ -142,7 +148,7 @@ export const LoginPage: React.FC = () => {
               <Input
                 label="Tam Adınız"
                 type="text"
-                placeholder="e.g. Dr. Markus Weber"
+                placeholder="e.g. Murad Həsənov"
                 leftIcon={<UserIcon className="w-4 h-4" />}
                 value={name}
                 onChange={(e) => setName(e.target.value)}
@@ -190,54 +196,6 @@ export const LoginPage: React.FC = () => {
               </Button>
             </form>
           )}
-
-          {/* Quick Demo Accounts Separator */}
-          <div className="relative pt-2">
-            <div className="absolute inset-0 flex items-center">
-              <div className="w-full border-t border-slate-800" />
-            </div>
-            <div className="relative flex justify-center text-[10px] uppercase font-bold text-slate-500">
-              <span className="bg-slate-900 px-3">və ya Sürətli Demo Düymələri</span>
-            </div>
-          </div>
-
-          <div className="grid grid-cols-3 gap-2">
-            <button
-              type="button"
-              onClick={() => {
-                loginAsTeacher();
-                navigate('/teacher');
-              }}
-              className="p-2.5 rounded-xl bg-brand-500/10 border border-brand-500/30 text-brand-300 hover:bg-brand-500/20 text-center transition-all group"
-            >
-              <UserCheck className="w-4 h-4 mx-auto mb-1 group-hover:scale-110 transition-transform" />
-              <span className="text-[11px] font-bold block">Məllim</span>
-            </button>
-
-            <button
-              type="button"
-              onClick={() => {
-                loginAsStudent();
-                navigate('/student');
-              }}
-              className="p-2.5 rounded-xl bg-indigo-500/10 border border-indigo-500/30 text-indigo-300 hover:bg-indigo-500/20 text-center transition-all group"
-            >
-              <Sparkles className="w-4 h-4 mx-auto mb-1 group-hover:scale-110 transition-transform" />
-              <span className="text-[11px] font-bold block">Tələbə</span>
-            </button>
-
-            <button
-              type="button"
-              onClick={() => {
-                loginAsAdmin();
-                navigate('/admin/users');
-              }}
-              className="p-2.5 rounded-xl bg-rose-500/10 border border-rose-500/30 text-rose-300 hover:bg-rose-500/20 text-center transition-all group"
-            >
-              <ShieldCheck className="w-4 h-4 mx-auto mb-1 group-hover:scale-110 transition-transform" />
-              <span className="text-[11px] font-bold block">Admin</span>
-            </button>
-          </div>
         </div>
       </div>
     </div>
