@@ -1,6 +1,6 @@
 import type { User } from '../types';
 
-const API_BASE_URL = 'http://localhost:5000/api';
+const API_BASE_URL = import.meta.env.VITE_API_URL || 'https://lern-no.vercel.app/api';
 
 export const authService = {
   async register(data: { name: string; email: string; password: string; role: string }): Promise<{ token: string; user: User }> {
