@@ -1,0 +1,51 @@
+### 1. Test Express API Health Check
+GET http://localhost:5000/api/health
+
+### 2. Qeydiyyat (Register New Student)
+POST http://localhost:5000/api/auth/register
+Content-Type: application/json
+
+{
+  "name": "Murad Həsənov",
+  "email": "murad@test.com",
+  "password": "password123",
+  "role": "STUDENT"
+}
+
+### 3. Qeydiyyat (Register New Teacher)
+POST http://localhost:5000/api/auth/register
+Content-Type: application/json
+
+{
+  "name": "Leyla Məmmədova",
+  "email": "leyla@test.com",
+  "password": "password123",
+  "role": "TEACHER"
+}
+
+### 4. Giriş (Login Student)
+POST http://localhost:5000/api/auth/login
+Content-Type: application/json
+
+{
+  "email": "murad@test.com",
+  "password": "password123"
+}
+
+### 5. Giriş (Login Default Teacher)
+POST http://localhost:5000/api/auth/login
+Content-Type: application/json
+
+{
+  "email": "teacher@demo.com",
+  "password": "password123"
+}
+
+### 6. Giriş (Login Admin)
+POST http://localhost:5000/api/auth/login
+Content-Type: application/json
+
+{
+  "email": "admin@lexora.com",
+  "password": "password123"
+}

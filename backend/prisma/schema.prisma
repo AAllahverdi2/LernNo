@@ -1,0 +1,64 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
+}
+
+model User {
+  id           String       @id @default(uuid())
+  name         String
+  email        String       @unique
+  passwordHash String
+  role         String       @default("STUDENT") // "TEACHER" | "STUDENT" | "ADMIN"
+  avatar       String?
+  streak       Int          @default(0)
+  createdAt    DateTime     @default(now())
+  updatedAt    DateTime     @updatedAt
+  classes      Class[]      @relation("TeacherClasses")
+  enrollments  Enrollment[]
+}
+
+model Class {
+  id              String           @id @default(uuid())
+  name            String
+  language        String           @default("German")
+  level           String           @default("A2")
+  description     String?
+  teacherId       String
+  teacher         User             @relation("TeacherClasses", fields: [teacherId], references: [id], onDelete: Cascade)
+  createdAt       DateTime         @default(now())
+  updatedAt       DateTime         @updatedAt
+  vocabularyWords VocabularyWord[]
+  enrollments     Enrollment[]
+}
+
+model Enrollment {
+  id        String   @id @default(uuid())
+  studentId String
+  student   User     @relation(fields: [studentId], references: [id], onDelete: Cascade)
+  classId   String
+  class     Class    @relation(fields: [classId], references: [id], onDelete: Cascade)
+  createdAt DateTime @default(now())
+
+  @@unique([studentId, classId])
+}
+
+model VocabularyWord {
+  id              String   @id @default(uuid())
+  classId         String
+  class           Class    @relation(fields: [classId], references: [id], onDelete: Cascade)
+  dayNumber       Int      @default(1)
+  topic           String
+  word            String
+  translation     String
+  article         String?  @default("")
+  plural          String?  @default("")
+  exampleSentence String
+  difficulty      String   @default("Medium")
+  status          String   @default("Published")
+  createdAt       DateTime @default(now())
+}

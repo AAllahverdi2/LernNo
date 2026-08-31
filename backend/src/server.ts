@@ -1,0 +1,36 @@
+import express from 'express';
+import cors from 'cors';
+import dotenv from 'dotenv';
+import swaggerUi from 'swagger-ui-express';
+import authRoutes from './routes/authRoutes.js';
+import adminRoutes from './routes/adminRoutes.js';
+import { swaggerSpec } from './config/swagger.js';
+
+dotenv.config();
+
+const app = express();
+const PORT = process.env.PORT || 5000;
+
+app.use(cors({ origin: '*' }));
+app.use(express.json());
+
+// Interactive Swagger UI Documentation Route
+app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
+
+// API Routes
+app.use('/api/auth', authRoutes);
+app.use('/api/admin', adminRoutes);
+
+// Health check endpoint
+app.get('/api/health', (_req, res) => {
+  res.json({ status: 'ok', message: 'LernNo Node.js Express API Server Running' });
+});
+
+if (process.env.NODE_ENV !== 'production') {
+  app.listen(PORT, () => {
+    console.log(`🚀 LernNo Backend Server running on http://localhost:${PORT}`);
+    console.log(`📚 Interactive Swagger UI Docs available at http://localhost:${PORT}/api-docs`);
+  });
+}
+
+export default app;
