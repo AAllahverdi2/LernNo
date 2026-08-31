@@ -11,6 +11,10 @@ export const swaggerSpec = {
   },
   servers: [
     {
+      url: 'https://lern-no.vercel.app/api',
+      description: 'Production Vercel Cloud Server',
+    },
+    {
       url: 'http://localhost:5000/api',
       description: 'Local Development Server',
     },
