@@ -1,7 +1,6 @@
 import express from 'express';
 import cors from 'cors';
 import dotenv from 'dotenv';
-import swaggerUi from 'swagger-ui-express';
 import authRoutes from './routes/authRoutes';
 import adminRoutes from './routes/adminRoutes';
 import { swaggerSpec } from './config/swagger';
@@ -30,12 +29,40 @@ app.get('/api-docs-json', (_req, res) => {
   res.json(swaggerSpec);
 });
 
-// Interactive Swagger UI Documentation Route
-try {
-  app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
-} catch (err) {
-  console.error('Swagger UI init error:', err);
-}
+// Interactive Swagger UI HTML Page (CDN Powered for Vercel Serverless)
+app.get('/api-docs', (_req, res) => {
+  res.send(`
+    <!DOCTYPE html>
+    <html lang="en">
+    <head>
+      <meta charset="UTF-8">
+      <title>LernNo API Documentation</title>
+      <link rel="stylesheet" href="https://unpkg.com/swagger-ui-dist@5.11.0/swagger-ui.css" />
+      <style>
+        body { margin: 0; padding: 0; background: #0f172a; }
+        .swagger-ui .topbar { display: none; }
+      </style>
+    </head>
+    <body>
+      <div id="swagger-ui"></div>
+      <script src="https://unpkg.com/swagger-ui-dist@5.11.0/swagger-ui-bundle.js"></script>
+      <script>
+        window.onload = () => {
+          SwaggerUIBundle({
+            url: '/api-docs-json',
+            dom_id: '#swagger-ui',
+            deepLinking: true,
+            presets: [
+              SwaggerUIBundle.presets.apis,
+              SwaggerUIBundle.SwaggerUIStandalonePreset
+            ],
+          });
+        };
+      </script>
+    </body>
+    </html>
+  `);
+});
 
 // API Routes
 app.use('/api/auth', authRoutes);
