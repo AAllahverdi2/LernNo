@@ -2,9 +2,9 @@ import express from 'express';
 import cors from 'cors';
 import dotenv from 'dotenv';
 import swaggerUi from 'swagger-ui-express';
-import authRoutes from './routes/authRoutes.js';
-import adminRoutes from './routes/adminRoutes.js';
-import { swaggerSpec } from './config/swagger.js';
+import authRoutes from './routes/authRoutes';
+import adminRoutes from './routes/adminRoutes';
+import { swaggerSpec } from './config/swagger';
 
 dotenv.config();
 

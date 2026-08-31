@@ -1,5 +1,5 @@
 import { Request, Response } from 'express';
-import { prisma } from '../config/db.js';
+import { prisma } from '../config/db';
 
 export const getAllUsers = async (_req: Request, res: Response): Promise<void> => {
   try {

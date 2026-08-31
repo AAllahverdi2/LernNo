@@ -1,8 +1,8 @@
 import { Request, Response } from 'express';
 import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
-import { prisma } from '../config/db.js';
-import { AuthRequest } from '../middleware/authMiddleware.js';
+import { prisma } from '../config/db';
+import { AuthRequest } from '../middleware/authMiddleware';
 
 const JWT_SECRET = process.env.JWT_SECRET || 'lexora_super_secret_jwt_key_2026_azera';
 
