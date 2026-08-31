@@ -2,9 +2,8 @@
   "name": "lernno-backend",
   "version": "1.0.0",
   "private": true,
-  "type": "module",
   "scripts": {
-    "dev": "nodemon --watch src --exec ts-node-esx src/server.ts",
+    "dev": "nodemon --watch src --exec ts-node src/server.ts",
     "postinstall": "prisma generate",
     "build": "prisma generate && tsc",
     "start": "node dist/server.js",
