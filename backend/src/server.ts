@@ -14,6 +14,16 @@ const PORT = process.env.PORT || 5000;
 app.use(cors({ origin: '*' }));
 app.use(express.json());
 
+// Root path response for Vercel preview
+app.get('/', (_req, res) => {
+  res.json({
+    status: 'ok',
+    message: '🚀 LernNo Node.js Express REST API Server is Live on Vercel!',
+    swaggerDocs: '/api-docs',
+    healthCheck: '/api/health',
+  });
+});
+
 // Interactive Swagger UI Documentation Route
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 
