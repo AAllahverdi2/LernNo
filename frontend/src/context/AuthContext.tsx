@@ -58,8 +58,8 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     } else if (roleLower === 'admin') {
       selectedUser = {
         id: 'admin-1',
-        name: 'LernNo Super Admin',
-        email: 'admin@lernno.com',
+        name: 'Allahverdi Ağamalıyev (Super Admin)',
+        email: 'agamaliyevallahverdii@gmail.com',
         role: 'admin',
         avatar: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=250&q=80',
         title: 'Platform Administrator',
@@ -84,8 +84,8 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const loginAsAdmin = () => {
     const adminUser: User = {
       id: 'admin-1',
-      name: 'LernNo Super Admin',
-      email: 'admin@lernno.com',
+      name: 'Allahverdi Ağamalıyev (Super Admin)',
+      email: 'agamaliyevallahverdii@gmail.com',
       role: 'admin',
       avatar: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=250&q=80',
       title: 'Platform Administrator',

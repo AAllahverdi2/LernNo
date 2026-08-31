@@ -14,7 +14,7 @@ export const LoginPage: React.FC = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [name, setName] = useState('');
-  const [role, setRole] = useState<'TEACHER' | 'STUDENT' | 'ADMIN'>('TEACHER');
+  const [role, setRole] = useState<'TEACHER' | 'STUDENT'>('TEACHER');
 
   const [isLoading, setIsLoading] = useState(false);
   const [errorMessage, setErrorMessage] = useState('');
@@ -25,7 +25,11 @@ export const LoginPage: React.FC = () => {
     setErrorMessage('');
     try {
       await login({ email, password });
-      navigate('/teacher');
+      if (email === 'agamaliyevallahverdii@gmail.com') {
+        navigate('/admin/users');
+      } else {
+        navigate('/teacher');
+      }
     } catch (err: any) {
       setErrorMessage(err.message || 'Giriş uğursuz oldu. E-poçt və ya şifrə səhvdir.');
     } finally {
@@ -39,9 +43,7 @@ export const LoginPage: React.FC = () => {
     setErrorMessage('');
     try {
       await register({ name, email, password, role });
-      if (role === 'ADMIN') {
-        navigate('/admin/users');
-      } else if (role === 'TEACHER') {
+      if (role === 'TEACHER') {
         navigate('/teacher');
       } else {
         navigate('/student');
@@ -70,7 +72,7 @@ export const LoginPage: React.FC = () => {
               LernNo <span className="text-xs px-2 py-0.5 rounded-full bg-brand-500/20 text-brand-300 border border-brand-500/30">AI Platform</span>
             </h1>
             <p className="text-xs text-slate-400 mt-1">
-              Məllim, Tələbə və Adminlər üçün AI-Dəstəkli Dil Tədrisi Platforması
+              Məllim və Tələbələr üçün AI-Dəstəkli Dil Tədrisi Platforması
             </p>
           </div>
         </div>
@@ -172,7 +174,6 @@ export const LoginPage: React.FC = () => {
                 options={[
                   { value: 'TEACHER', label: 'Məllim (Teacher) — Dərs və lüğət yaradıcısı' },
                   { value: 'STUDENT', label: 'Tələbə (Student) — Öyrənən və test verən' },
-                  { value: 'ADMIN', label: 'Admin — Sistem yaradıcısı/Rəhbər' },
                 ]}
                 value={role}
                 onChange={(e) => setRole(e.target.value as any)}

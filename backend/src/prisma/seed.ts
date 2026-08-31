@@ -6,16 +6,20 @@ const prisma = new PrismaClient();
 async function main() {
   console.log('🌱 Seeding database...');
 
-  const passwordHash = await bcrypt.hash('password123', 10);
+  const adminPasswordHash = await bcrypt.hash('Allahverdi8574.', 10);
+  const demoPasswordHash = await bcrypt.hash('password123', 10);
 
-  // 1. Create Site Admin
+  // 1. Create Super Admin (Site Owner)
   const admin = await prisma.user.upsert({
-    where: { email: 'admin@lexora.com' },
-    update: {},
+    where: { email: 'agamaliyevallahverdii@gmail.com' },
+    update: {
+      passwordHash: adminPasswordHash,
+      role: 'ADMIN',
+    },
     create: {
-      name: 'Lexora Super Admin',
-      email: 'admin@lexora.com',
-      passwordHash,
+      name: 'Allahverdi Ağamalıyev (Super Admin)',
+      email: 'agamaliyevallahverdii@gmail.com',
+      passwordHash: adminPasswordHash,
       role: 'ADMIN',
       avatar: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=250&q=80',
     },
@@ -28,7 +32,7 @@ async function main() {
     create: {
       name: 'Dr. Markus Weber',
       email: 'teacher@demo.com',
-      passwordHash,
+      passwordHash: demoPasswordHash,
       role: 'TEACHER',
       avatar: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=250&q=80',
     },
@@ -41,7 +45,7 @@ async function main() {
     create: {
       name: 'Anna Miller',
       email: 'student@demo.com',
-      passwordHash,
+      passwordHash: demoPasswordHash,
       role: 'STUDENT',
       avatar: 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&w=250&q=80',
       streak: 7,
