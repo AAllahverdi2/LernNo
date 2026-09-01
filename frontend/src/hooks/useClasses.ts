@@ -54,7 +54,28 @@ export const useClassDetail = (classId: string) => {
     queryKey: ['class', classId, token],
     queryFn: async () => {
       if (!token || !classId) return null;
-      return classService.getClassDetail(token, classId);
+      const data = await classService.getClassDetail(token, classId);
+      if (!data) return null;
+
+      const students = (data.enrollments || []).map((e: any) => ({
+        id: e.student?.id || e.id,
+        enrollmentId: e.id,
+        name: e.student?.name || 'Tələbə',
+        email: e.student?.email || '',
+        avatar: e.student?.avatar,
+        status: e.status === 'ACCEPTED' ? 'Active' : e.status === 'PENDING' ? 'Pending' : 'Inactive',
+        wordsLearned: 0,
+        quizAverage: 0,
+        streak: e.student?.streak || 0,
+      }));
+
+      return {
+        ...data,
+        students,
+        studentCount: students.length,
+        vocabularyCount: data.vocabularyWords?.length || 0,
+        averageProgress: 0,
+      };
     },
     enabled: !!token && !!classId,
   });

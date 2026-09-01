@@ -2,6 +2,7 @@ import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../../../context/AuthContext';
 import { useQuiz } from '../../../hooks/useQuiz';
+import { StudentInvitationBanner } from './StudentInvitationBanner';
 import { Card } from '../../common/Card';
 import { Button } from '../../common/Button';
 import { Progress } from '../../common/Progress';
@@ -26,6 +27,9 @@ export const StudentDashboard: React.FC = () => {
 
   return (
     <div className="space-y-8 animate-fadeIn">
+      {/* Student Invitation Banner (shows pending class invitations) */}
+      <StudentInvitationBanner />
+
       {/* Header Greeting */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 p-6 rounded-3xl bg-gradient-to-r from-brand-950/80 via-slate-900 to-indigo-950/80 border border-brand-500/30 shadow-2xl">
         <div>

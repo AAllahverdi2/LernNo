@@ -46,6 +46,7 @@ model Enrollment {
   student   User     @relation(fields: [studentId], references: [id], onDelete: Cascade)
   classId   String
   class     Class    @relation(fields: [classId], references: [id], onDelete: Cascade)
+  status    String   @default("ACCEPTED") // "PENDING" | "ACCEPTED" | "REJECTED"
   createdAt DateTime @default(now())
 
   @@unique([studentId, classId])

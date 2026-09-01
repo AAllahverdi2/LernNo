@@ -101,20 +101,23 @@ export const getClassDetail = async (req: AuthRequest, res: Response): Promise<v
   }
 };
 
-// 4. Add Student to Class by Email (Qrupa Tələbə Əlavə Etmək)
-export const addStudentToClass = async (req: AuthRequest, res: Response): Promise<void> => {
+// 4. Invite Student to Class (Qrupa Tələbə Dəvət Etmək - PENDING)
+export const inviteStudentToClass = async (req: AuthRequest, res: Response): Promise<void> => {
   try {
     const { classId } = req.params;
-    const { email } = req.body;
+    const { studentId, email } = req.body;
 
-    if (!email) {
-      res.status(400).json({ message: 'Tələbənin e-poçt ünvanı daxil edilməlidir.' });
+    if (!studentId && !email) {
+      res.status(400).json({ message: 'Tələbənin ID-si və ya e-poçt ünvanı mütləq daxil edilməlidir.' });
       return;
     }
 
-    const student = await prisma.user.findUnique({ where: { email } });
+    const student = await prisma.user.findFirst({
+      where: studentId ? { id: String(studentId) } : { email: String(email) },
+    });
+
     if (!student) {
-      res.status(404).json({ message: 'Bu e-poçt ünvanı ilə istifadəçi tapılmadı.' });
+      res.status(404).json({ message: 'Bu mənşəli tələbə tapılmadı.' });
       return;
     }
 
@@ -128,7 +131,22 @@ export const addStudentToClass = async (req: AuthRequest, res: Response): Promis
     });
 
     if (existingEnrollment) {
-      res.status(400).json({ message: 'Bu tələbə artıq qrupa əlavə olunub.' });
+      if (existingEnrollment.status === 'ACCEPTED') {
+        res.status(400).json({ message: 'Bu tələbə artıq qrupun aktiv tələbəsidir.' });
+        return;
+      }
+      if (existingEnrollment.status === 'PENDING') {
+        res.status(400).json({ message: 'Bu tələbəyə artıq dəvət göndərilib, cavab gözlənilir.' });
+        return;
+      }
+      const updatedEnrollment = await prisma.enrollment.update({
+        where: { id: existingEnrollment.id },
+        data: { status: 'PENDING' },
+        include: {
+          student: { select: { id: true, name: true, email: true, avatar: true } },
+        },
+      });
+      res.status(200).json({ message: 'Tələbəyə yenidən dəvət göndərildi.', enrollment: updatedEnrollment });
       return;
     }
 
@@ -136,6 +154,7 @@ export const addStudentToClass = async (req: AuthRequest, res: Response): Promis
       data: {
         studentId: student.id,
         classId: String(classId),
+        status: 'PENDING',
       },
       include: {
         student: {
@@ -144,9 +163,77 @@ export const addStudentToClass = async (req: AuthRequest, res: Response): Promis
       },
     });
 
-    res.status(201).json({ message: 'Tələbə qrupa uğurla əlavə edildi.', enrollment });
+    res.status(201).json({ message: 'Tələbəyə qrup dəvəti göndərildi.', enrollment });
   } catch (error: any) {
-    res.status(500).json({ message: 'Tələbə qrupa əlavə ediləndə xəta baş verdi.' });
+    res.status(500).json({ message: 'Tələbəyə dəvət göndəriləndə xəta baş verdi.' });
+  }
+};
+
+// 7. Get Pending Invitations for Logged-in Student
+export const getMyInvitations = async (req: AuthRequest, res: Response): Promise<void> => {
+  try {
+    if (!req.user) {
+      res.status(401).json({ message: 'Sistemə daxil olunmayıb.' });
+      return;
+    }
+
+    const invitations = await prisma.enrollment.findMany({
+      where: {
+        studentId: req.user.id,
+        status: 'PENDING',
+      },
+      include: {
+        class: {
+          include: {
+            teacher: {
+              select: { id: true, name: true, email: true, avatar: true, subject: true },
+            },
+          },
+        },
+      },
+      orderBy: { createdAt: 'desc' },
+    });
+
+    res.status(200).json({ invitations });
+  } catch (error: any) {
+    res.status(500).json({ message: 'Dəvətlər yüklənərkən xəta baş verdi.' });
+  }
+};
+
+// 8. Respond to Class Invitation (Qəbul et / İmtina et)
+export const respondToInvitation = async (req: AuthRequest, res: Response): Promise<void> => {
+  try {
+    const { enrollmentId } = req.params;
+    const { action } = req.body;
+
+    if (!action || !['ACCEPT', 'REJECT'].includes(action)) {
+      res.status(400).json({ message: 'Qərar "ACCEPT" və ya "REJECT" olmalıdır.' });
+      return;
+    }
+
+    const enrollment = await prisma.enrollment.findUnique({
+      where: { id: String(enrollmentId) },
+    });
+
+    if (!enrollment || enrollment.studentId !== req.user?.id) {
+      res.status(404).json({ message: 'Dəvət tapılmadı və ya sizə aid deyil.' });
+      return;
+    }
+
+    if (action === 'ACCEPT') {
+      const updated = await prisma.enrollment.update({
+        where: { id: String(enrollmentId) },
+        data: { status: 'ACCEPTED' },
+      });
+      res.status(200).json({ message: 'Dəvət qəbul edildi. Artıq qrupa üzvsünüz!', enrollment: updated });
+    } else {
+      await prisma.enrollment.delete({
+        where: { id: String(enrollmentId) },
+      });
+      res.status(200).json({ message: 'Dəvətdən imtina edildi.' });
+    }
+  } catch (error: any) {
+    res.status(500).json({ message: 'Cavab göndərilərkən xəta baş verdi.' });
   }
 };
 

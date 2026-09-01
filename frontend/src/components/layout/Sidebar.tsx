@@ -1,6 +1,7 @@
 import React from 'react';
 import { NavLink, useNavigate } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
+import { useTranslation } from '../../context/LanguageContext';
 import {
   LayoutDashboard,
   GraduationCap,
@@ -12,7 +13,6 @@ import {
   Settings,
   Flame,
   RotateCcw,
-  Award,
   LogOut,
   BrainCircuit,
   ChevronRight,
@@ -26,35 +26,35 @@ interface SidebarProps {
 
 export const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose }) => {
   const { role, user, logout } = useAuth();
+  const { t } = useTranslation();
   const navigate = useNavigate();
 
   const teacherNav = [
-    { label: 'Dashboard', path: '/teacher', icon: LayoutDashboard },
-    { label: 'My Classes', path: '/teacher/classes', icon: GraduationCap },
-    { label: 'Vocabulary', path: '/teacher/vocabulary', icon: BookOpen },
-    { label: 'Assignments', path: '/teacher/assignments', icon: FileCheck2 },
-    { label: 'Students', path: '/teacher/students', icon: Users },
-    { label: 'Analytics', path: '/teacher/analytics', icon: BarChart3 },
-    { label: 'AI Tools', path: '/teacher/ai-tools', icon: Sparkles },
-    { label: 'Settings', path: '/teacher/settings', icon: Settings },
+    { label: t('nav.dashboard'), path: '/teacher', icon: LayoutDashboard },
+    { label: t('nav.myClasses'), path: '/teacher/classes', icon: GraduationCap },
+    { label: t('nav.vocabulary'), path: '/teacher/vocabulary', icon: BookOpen },
+    { label: t('nav.assignments'), path: '/teacher/assignments', icon: FileCheck2 },
+    { label: t('nav.students'), path: '/teacher/students', icon: Users },
+    { label: t('nav.analytics'), path: '/teacher/analytics', icon: BarChart3 },
+    { label: t('nav.aiTools'), path: '/teacher/ai-tools', icon: Sparkles },
+    { label: t('nav.settings'), path: '/teacher/settings', icon: Settings },
   ];
 
   const studentNav = [
-    { label: 'Dashboard', path: '/student', icon: LayoutDashboard },
-    { label: "Today's Lesson", path: '/student/today', icon: BookOpen },
-    { label: 'Review', path: '/student/review', icon: RotateCcw },
-    { label: 'Vocabulary', path: '/student/vocabulary', icon: GraduationCap },
-    { label: 'Quizzes', path: '/student/quiz', icon: Award },
-    { label: 'Progress', path: '/student/progress', icon: BarChart3 },
-    { label: 'Settings', path: '/student/settings', icon: Settings },
+    { label: t('nav.dashboard'), path: '/student', icon: LayoutDashboard },
+    { label: t('nav.myClasses'), path: '/student/today', icon: BookOpen },
+    { label: t('nav.vocabulary'), path: '/student/vocabulary', icon: GraduationCap },
+    { label: t('nav.assignments'), path: '/student/review', icon: RotateCcw },
+    { label: t('nav.analytics'), path: '/student/progress', icon: BarChart3 },
+    { label: t('nav.settings'), path: '/student/settings', icon: Settings },
   ];
 
   const adminNav = [
-    { label: 'User Directory', path: '/admin/users', icon: Users },
-    { label: 'Teacher Portal', path: '/teacher', icon: GraduationCap },
-    { label: 'Student Portal', path: '/student', icon: BookOpen },
-    { label: 'System Analytics', path: '/teacher/analytics', icon: BarChart3 },
-    { label: 'Settings', path: '/teacher/settings', icon: Settings },
+    { label: t('nav.students'), path: '/admin/users', icon: Users },
+    { label: t('nav.teacherWorkspace'), path: '/teacher', icon: GraduationCap },
+    { label: t('nav.studentWorkspace'), path: '/student', icon: BookOpen },
+    { label: t('nav.analytics'), path: '/teacher/analytics', icon: BarChart3 },
+    { label: t('nav.settings'), path: '/teacher/settings', icon: Settings },
   ];
 
   const navItems = role === 'admin' ? adminNav : role === 'teacher' ? teacherNav : studentNav;
@@ -106,7 +106,7 @@ export const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose }) => {
                 <h4 className="text-xs font-bold text-white truncate">{user.name}</h4>
                 <p className="text-[11px] text-slate-400 capitalize truncate flex items-center gap-1">
                   {role === 'admin' && <ShieldCheck className="w-3 h-3 text-rose-400 inline" />}
-                  {role} workspace
+                  {role === 'teacher' ? t('nav.teacherWorkspace') : role === 'admin' ? 'Admin' : t('nav.studentWorkspace')}
                 </p>
               </div>
             </div>
@@ -122,7 +122,7 @@ export const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose }) => {
         {/* Navigation List */}
         <nav className="flex-1 px-4 py-2 overflow-y-auto space-y-1">
           <div className="px-3 pb-2 text-[10px] font-semibold text-slate-500 uppercase tracking-wider">
-            {role === 'admin' ? 'Super Admin Portal' : role === 'teacher' ? 'Teacher Workspace' : 'Student Dashboard'}
+            {role === 'admin' ? 'Super Admin Portal' : role === 'teacher' ? t('nav.teacherWorkspace') : t('nav.studentWorkspace')}
           </div>
           {navItems.map((item) => {
             const Icon = item.icon;
@@ -157,7 +157,7 @@ export const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose }) => {
             className="w-full flex items-center gap-2.5 px-3.5 py-2.5 text-xs font-semibold text-slate-400 hover:text-rose-300 hover:bg-rose-500/10 rounded-xl transition-colors border border-transparent hover:border-rose-500/20"
           >
             <LogOut className="w-4 h-4 text-rose-400" />
-            <span>Sign Out</span>
+            <span>{t('nav.logout')}</span>
           </button>
         </div>
       </aside>

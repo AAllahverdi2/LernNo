@@ -108,4 +108,53 @@ export const classService = {
     if (!response.ok) throw new Error(result.message || 'Sınaq yaradıla bilmədi.');
     return result.quiz;
   },
+  // Search students for autocomplete dropdown
+  async searchStudents(token: string, search: string = '') {
+    const response = await fetch(`${API_BASE_URL}/classes/students/search?search=${encodeURIComponent(search)}`, {
+      headers: { Authorization: `Bearer ${token}` },
+    });
+    const result = await response.json();
+    if (!response.ok) throw new Error(result.message || 'Tələbələr yüklənə bilmədi.');
+    return result.students || [];
+  },
+
+  // Invite student to class by studentId or email
+  async inviteStudent(token: string, classId: string, studentId: string, email?: string) {
+    const response = await fetch(`${API_BASE_URL}/classes/${classId}/invite`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${token}`,
+      },
+      body: JSON.stringify({ studentId, email }),
+    });
+    const result = await response.json();
+    if (!response.ok) throw new Error(result.message || 'Tələbəyə dəvət göndərilə bilmədi.');
+    return result;
+  },
+
+  // Get invitations for logged-in student
+  async getMyInvitations(token: string) {
+    const response = await fetch(`${API_BASE_URL}/classes/invitations/my-invitations`, {
+      headers: { Authorization: `Bearer ${token}` },
+    });
+    const result = await response.json();
+    if (!response.ok) throw new Error(result.message || 'Dəvətlər yüklənə bilmədi.');
+    return result.invitations || [];
+  },
+
+  // Respond to invitation (ACCEPT or REJECT)
+  async respondToInvitation(token: string, enrollmentId: string, action: 'ACCEPT' | 'REJECT') {
+    const response = await fetch(`${API_BASE_URL}/classes/invitations/${enrollmentId}/respond`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${token}`,
+      },
+      body: JSON.stringify({ action }),
+    });
+    const result = await response.json();
+    if (!response.ok) throw new Error(result.message || 'Cavab göndərilə bilmədi.');
+    return result;
+  },
 };

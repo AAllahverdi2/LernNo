@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { useVocabulary } from '../../../hooks/useVocabulary';
+import { useTranslation } from '../../../context/LanguageContext';
 import { Button } from '../../common/Button';
 import { ArticleBadge, DifficultyBadge, StatusBadge } from '../../common/Badge';
 import { Input } from '../../common/Input';
@@ -26,6 +27,7 @@ interface VocabularyManagerProps {
 
 export const VocabularyManager: React.FC<VocabularyManagerProps> = ({ classId = 'class-de-a2' }) => {
   const { words, deleteWord } = useVocabulary(classId);
+  const { t } = useTranslation();
   const { openAIGenerator } = useOutletContext<{ openAIGenerator: () => void }>() || {};
 
   const [search, setSearch] = useState('');
@@ -62,10 +64,10 @@ export const VocabularyManager: React.FC<VocabularyManagerProps> = ({ classId = 
         <div>
           <h2 className="text-xl font-bold text-white flex items-center gap-2">
             <BookOpen className="w-6 h-6 text-brand-400" />
-            Vocabulary Sets by Day & Topic
+            {t('classDetail.vocabManager.title')}
           </h2>
           <p className="text-slate-400 text-xs mt-1">
-            Organize daily words, add translations, example sentences, and publish lessons.
+            {t('classDetail.vocabManager.subtitle')}
           </p>
         </div>
 
@@ -76,7 +78,7 @@ export const VocabularyManager: React.FC<VocabularyManagerProps> = ({ classId = 
             leftIcon={<FileSpreadsheet className="w-4 h-4 text-emerald-400" />}
             onClick={() => setIsBatchOpen(true)}
           >
-            Batch Import
+            {t('classDetail.vocabManager.batchImport')}
           </Button>
           <Button
             variant="secondary"
@@ -84,7 +86,7 @@ export const VocabularyManager: React.FC<VocabularyManagerProps> = ({ classId = 
             leftIcon={<Plus className="w-4 h-4" />}
             onClick={() => setIsAddWordOpen(true)}
           >
-            Add Word
+            {t('classDetail.vocabManager.addWord')}
           </Button>
           <Button
             variant="gradient"
@@ -92,7 +94,7 @@ export const VocabularyManager: React.FC<VocabularyManagerProps> = ({ classId = 
             leftIcon={<Sparkles className="w-4 h-4" />}
             onClick={openAIGenerator}
           >
-            Generate with AI
+            {t('classDetail.vocabManager.generateAI')}
           </Button>
         </div>
       </div>
@@ -101,7 +103,7 @@ export const VocabularyManager: React.FC<VocabularyManagerProps> = ({ classId = 
       <div className="flex flex-col md:flex-row items-center justify-between gap-4 p-4 rounded-2xl bg-slate-900/60 border border-slate-800">
         <div className="w-full md:w-80">
           <Input
-            placeholder="Search German word, translation, topic..."
+            placeholder={t('classDetail.vocabManager.searchPlaceholder')}
             leftIcon={<Search className="w-4 h-4" />}
             value={search}
             onChange={(e) => setSearch(e.target.value)}
@@ -119,7 +121,7 @@ export const VocabularyManager: React.FC<VocabularyManagerProps> = ({ classId = 
             }`}
           >
             <Layers className="w-3.5 h-3.5" />
-            All Days ({words.length})
+            {t('classDetail.vocabManager.allDays')} ({words.length})
           </button>
           {daysList.map((day) => (
             <button
@@ -132,7 +134,7 @@ export const VocabularyManager: React.FC<VocabularyManagerProps> = ({ classId = 
               }`}
             >
               <Calendar className="w-3.5 h-3.5" />
-              Day {day}
+              {t('classDetail.vocabManager.day')} {day}
             </button>
           ))}
         </div>
@@ -142,14 +144,14 @@ export const VocabularyManager: React.FC<VocabularyManagerProps> = ({ classId = 
       <Table>
         <TableHeader>
           <TableRow>
-            <TableHead>Day & Topic</TableHead>
-            <TableHead>Article & Word</TableHead>
-            <TableHead>Translation</TableHead>
+            <TableHead>{t('classDetail.vocabManager.day')} & {t('classDetail.vocabManager.topicHeader')}</TableHead>
+            <TableHead>{t('classDetail.vocabManager.wordHeader')}</TableHead>
+            <TableHead>{t('classDetail.vocabManager.translationHeader')}</TableHead>
             <TableHead>Plural</TableHead>
-            <TableHead>Example Sentence</TableHead>
-            <TableHead>Difficulty</TableHead>
-            <TableHead>Status</TableHead>
-            <TableHead className="text-right">Actions</TableHead>
+            <TableHead>Nümunə Cümlə</TableHead>
+            <TableHead>{t('classDetail.vocabManager.difficultyHeader')}</TableHead>
+            <TableHead>{t('classDetail.vocabManager.statusHeader')}</TableHead>
+            <TableHead className="text-right">{t('classDetail.vocabManager.actionsHeader')}</TableHead>
           </TableRow>
         </TableHeader>
         <TableBody>
