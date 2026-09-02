@@ -26,6 +26,9 @@ export const useClasses = () => {
       }));
     },
     enabled: !!token,
+    staleTime: 1000 * 60 * 2, // Cache classes for 2 minutes to prevent repeated pending fetches
+    gcTime: 1000 * 60 * 15,
+    refetchOnWindowFocus: false,
   });
 
   const createClassMutation = useMutation({

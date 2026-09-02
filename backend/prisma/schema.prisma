@@ -41,6 +41,8 @@ model Class {
   quizzes         Quiz[]
   enrollments     Enrollment[]
   vocabularyAssignments ClassVocabularyAssignment[]
+
+  @@index([teacherId])
 }
 
 model ClassVocabularyAssignment {
@@ -53,6 +55,7 @@ model ClassVocabularyAssignment {
 
   @@unique([classId, topic, language])
   @@index([classId])
+  @@index([topic])
 }
 
 model Enrollment {
@@ -85,6 +88,9 @@ model VocabularyWord {
   createdAt       DateTime @default(now())
 
   @@index([classId])
+  @@index([topic])
+  @@index([language])
+  @@index([topic, language])
   @@index([classId, topic])
   @@index([classId, language])
 }

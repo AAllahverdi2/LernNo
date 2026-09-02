@@ -43,49 +43,84 @@ export const getTeacherClasses = async (req: AuthRequest, res: Response): Promis
       return;
     }
 
-    const classes = await prisma.class.findMany({
-      where: req.user.role === 'ADMIN'
-        ? {}
-        : req.user.role === 'STUDENT'
-        ? { enrollments: { some: { studentId: req.user.id } } }
-        : { teacherId: req.user.id },
-      include: {
-        teacher: {
-          select: { id: true, name: true, email: true, avatar: true },
-        },
-        _count: {
-          select: {
-            enrollments: true,
-            vocabularyWords: true,
-            quizzes: true,
-          },
-        },
+    const userId = req.user.id;
+    const role = req.user.role;
+
+    let classes: any[] = [];
+
+    if (role === 'ADMIN') {
+      classes = await prisma.$queryRaw`
+        SELECT 
+          c.id, c.name, c.language, c."targetLanguage", c.level, c.schedule, c.description, c."teacherId", c."createdAt", c."updatedAt",
+          json_build_object('id', t.id, 'name', t.name, 'email', t.email, 'avatar', t.avatar) AS teacher,
+          (SELECT COUNT(*)::int FROM "Enrollment" e WHERE e."classId" = c.id) AS "studentCount",
+          (SELECT COUNT(*)::int FROM "Quiz" q WHERE q."classId" = c.id) AS "quizCount",
+          (
+            SELECT COUNT(*)::int
+            FROM "VocabularyWord" vw
+            WHERE vw.topic IN (
+              SELECT va.topic FROM "ClassVocabularyAssignment" va WHERE va."classId" = c.id
+            )
+          ) AS "vocabularyCount"
+        FROM "Class" c
+        JOIN "User" t ON t.id = c."teacherId"
+        ORDER BY c."createdAt" DESC;
+      `;
+    } else if (role === 'STUDENT') {
+      classes = await prisma.$queryRaw`
+        SELECT 
+          c.id, c.name, c.language, c."targetLanguage", c.level, c.schedule, c.description, c."teacherId", c."createdAt", c."updatedAt",
+          json_build_object('id', t.id, 'name', t.name, 'email', t.email, 'avatar', t.avatar) AS teacher,
+          (SELECT COUNT(*)::int FROM "Enrollment" e WHERE e."classId" = c.id) AS "studentCount",
+          (SELECT COUNT(*)::int FROM "Quiz" q WHERE q."classId" = c.id) AS "quizCount",
+          (
+            SELECT COUNT(*)::int
+            FROM "VocabularyWord" vw
+            WHERE vw.topic IN (
+              SELECT va.topic FROM "ClassVocabularyAssignment" va WHERE va."classId" = c.id
+            )
+          ) AS "vocabularyCount"
+        FROM "Class" c
+        JOIN "User" t ON t.id = c."teacherId"
+        WHERE c.id IN (
+          SELECT en."classId" FROM "Enrollment" en WHERE en."studentId" = ${userId}
+        )
+        ORDER BY c."createdAt" DESC;
+      `;
+    } else {
+      // TEACHER
+      classes = await prisma.$queryRaw`
+        SELECT 
+          c.id, c.name, c.language, c."targetLanguage", c.level, c.schedule, c.description, c."teacherId", c."createdAt", c."updatedAt",
+          json_build_object('id', t.id, 'name', t.name, 'email', t.email, 'avatar', t.avatar) AS teacher,
+          (SELECT COUNT(*)::int FROM "Enrollment" e WHERE e."classId" = c.id) AS "studentCount",
+          (SELECT COUNT(*)::int FROM "Quiz" q WHERE q."classId" = c.id) AS "quizCount",
+          (
+            SELECT COUNT(*)::int
+            FROM "VocabularyWord" vw
+            WHERE vw.topic IN (
+              SELECT va.topic FROM "ClassVocabularyAssignment" va WHERE va."classId" = c.id
+            )
+          ) AS "vocabularyCount"
+        FROM "Class" c
+        JOIN "User" t ON t.id = c."teacherId"
+        WHERE c."teacherId" = ${userId}
+        ORDER BY c."createdAt" DESC;
+      `;
+    }
+
+    const formattedClasses = classes.map((cls) => ({
+      ...cls,
+      _count: {
+        enrollments: cls.studentCount || 0,
+        quizzes: cls.quizCount || 0,
+        vocabularyWords: cls.vocabularyCount || 0,
       },
-      orderBy: { createdAt: 'desc' },
-    });
+    }));
 
-    const classesWithAssignedCount = await Promise.all(
-      classes.map(async (cls) => {
-        const assignments = await prisma.classVocabularyAssignment.findMany({
-          where: { classId: cls.id },
-          select: { topic: true },
-        });
-        const assignedTopics = assignments.map((a) => a.topic);
-        const actualWordCount = await prisma.vocabularyWord.count({
-          where: { topic: { in: assignedTopics } },
-        });
-        return {
-          ...cls,
-          _count: {
-            ...cls._count,
-            vocabularyWords: actualWordCount,
-          },
-        };
-      })
-    );
-
-    res.status(200).json({ classes: classesWithAssignedCount });
+    res.status(200).json({ classes: formattedClasses });
   } catch (error: any) {
+    console.error('getTeacherClasses error:', error);
     res.status(500).json({ message: 'Qruplar yüklənəndə xəta baş verdi.' });
   }
 };
@@ -95,70 +130,62 @@ export const getClassDetail = async (req: AuthRequest, res: Response): Promise<v
   try {
     const { classId } = req.params;
 
-    const classDetail = await prisma.class.findUnique({
-      where: { id: String(classId) },
-      select: {
-        id: true,
-        name: true,
-        language: true,
-        level: true,
-        schedule: true,
-        description: true,
-        teacherId: true,
-        createdAt: true,
-        updatedAt: true,
-        teacher: {
-          select: { id: true, name: true, email: true, subject: true, avatar: true },
-        },
-        enrollments: {
-          include: {
-            student: {
-              select: { id: true, name: true, email: true, avatar: true, streak: true },
-            },
-          },
-        },
-        quizzes: {
-          select: { id: true, title: true, totalQuestions: true, passingScore: true, createdAt: true },
-          orderBy: { createdAt: 'desc' },
-        },
-        _count: {
-          select: {
-            vocabularyWords: true,
-            enrollments: true,
-            quizzes: true,
-          },
-        },
-      },
-    });
+    const results: any[] = await prisma.$queryRaw`
+      SELECT 
+        c.id, c.name, c.language, c."targetLanguage", c.level, c.schedule, c.description, c."teacherId", c."createdAt", c."updatedAt",
+        json_build_object('id', t.id, 'name', t.name, 'email', t.email, 'subject', t.subject, 'avatar', t.avatar) AS teacher,
+        (
+          SELECT COALESCE(json_agg(json_build_object(
+            'id', e.id,
+            'status', e.status,
+            'student', json_build_object(
+              'id', u.id, 'name', u.name, 'email', u.email, 'avatar', u.avatar, 'streak', u.streak
+            )
+          )), '[]'::json)
+          FROM "Enrollment" e
+          JOIN "User" u ON u.id = e."studentId"
+          WHERE e."classId" = c.id
+        ) AS enrollments,
+        (
+          SELECT COALESCE(json_agg(json_build_object(
+            'id', q.id, 'title', q.title, 'totalQuestions', q."totalQuestions", 'passingScore', q."passingScore", 'createdAt', q."createdAt"
+          ) ORDER BY q."createdAt" DESC), '[]'::json)
+          FROM "Quiz" q
+          WHERE q."classId" = c.id
+        ) AS quizzes,
+        (
+          SELECT COUNT(*)::int
+          FROM "VocabularyWord" vw
+          WHERE vw.topic IN (
+            SELECT va.topic FROM "ClassVocabularyAssignment" va WHERE va."classId" = c.id
+          )
+        ) AS "vocabularyCount"
+      FROM "Class" c
+      JOIN "User" t ON t.id = c."teacherId"
+      WHERE c.id = ${classId}
+      LIMIT 1;
+    `;
 
-    if (!classDetail) {
+    if (!results || results.length === 0) {
       res.status(404).json({ message: 'Qrup tapılmadı.' });
       return;
     }
 
-    const assignments = await prisma.classVocabularyAssignment.findMany({
-      where: { classId: String(classId) },
-      select: { topic: true },
-    });
-    const assignedTopicNames = assignments.map((a) => a.topic);
-
-    const actualWordCount = await prisma.vocabularyWord.count({
-      where: {
-        topic: { in: assignedTopicNames },
-      },
-    });
+    const cls = results[0];
 
     const responseClass = {
-      ...classDetail,
-      vocabularyCount: actualWordCount,
+      ...cls,
+      vocabularyCount: cls.vocabularyCount || 0,
       _count: {
-        ...classDetail._count,
-        vocabularyWords: actualWordCount,
+        enrollments: cls.enrollments?.length || 0,
+        quizzes: cls.quizzes?.length || 0,
+        vocabularyWords: cls.vocabularyCount || 0,
       },
     };
 
     res.status(200).json({ class: responseClass });
   } catch (error: any) {
+    console.error('getClassDetail error:', error);
     res.status(500).json({ message: 'Qrup detalları yüklənəndə xəta baş verdi.' });
   }
 };
@@ -365,45 +392,55 @@ export const getVocabularyByClass = async (req: AuthRequest, res: Response): Pro
     const limitNum = Math.min(100, Math.max(10, Number(limit) || 50));
     const skip = (pageNum - 1) * limitNum;
 
-    // Run ALL 4 DB queries in PARALLEL via Promise.all for maximum speed!
-    const [topicCounts, langCounts, totalWords, words] = await Promise.all([
+    // Run unified groupBy query and words query in parallel!
+    const [topicAndLangCounts, words] = await Promise.all([
       prisma.vocabularyWord.groupBy({
-        by: ['topic'],
+        by: ['topic', 'language'],
         where: whereClause,
         _count: { _all: true },
       }),
-      prisma.vocabularyWord.groupBy({
-        by: ['language'],
-        where: whereClause,
-        _count: { _all: true },
-      }),
-      prisma.vocabularyWord.count({ where: whereClause }),
-      prisma.vocabularyWord.findMany({
-        where: whereClause,
-        select: {
-          id: true,
-          word: true,
-          translation: true,
-          article: true,
-          topic: true,
-          language: true,
-          targetLanguage: true,
-        },
-        orderBy: { word: 'asc' },
-        skip: topic ? skip : 0,
-        take: topic ? limitNum : 50,
-      }),
+      // Only fetch word list if viewing a specific topic or active search
+      topic || search
+        ? prisma.vocabularyWord.findMany({
+            where: whereClause,
+            select: {
+              id: true,
+              word: true,
+              translation: true,
+              article: true,
+              topic: true,
+              language: true,
+              targetLanguage: true,
+            },
+            orderBy: { word: 'asc' },
+            skip,
+            take: limitNum,
+          })
+        : Promise.resolve([]),
     ]);
 
-    const categoriesData = topicCounts.map((tc) => ({
-      name: tc.topic || 'Ümumi',
-      count: tc._count._all,
+    const topicMap = new Map<string, number>();
+    const langMap = new Map<string, number>();
+    let totalWords = 0;
+
+    for (const item of topicAndLangCounts) {
+      const tName = item.topic || 'Ümumi';
+      const lName = item.language || 'Alman Dili';
+      const count = item._count._all;
+      totalWords += count;
+      topicMap.set(tName, (topicMap.get(tName) || 0) + count);
+      langMap.set(lName, (langMap.get(lName) || 0) + count);
+    }
+
+    const categoriesData = Array.from(topicMap.entries()).map(([name, count]) => ({
+      name,
+      count,
     }));
     const categoryNames = categoriesData.map((c) => c.name);
 
-    const languagesData = langCounts.map((lc) => ({
-      name: lc.language || 'Alman Dili',
-      count: lc._count._all,
+    const languagesData = Array.from(langMap.entries()).map(([name, count]) => ({
+      name,
+      count,
     }));
     const languageNames = languagesData.map((l) => l.name);
 

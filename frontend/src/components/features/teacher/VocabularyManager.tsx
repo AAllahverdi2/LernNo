@@ -443,53 +443,48 @@ export const VocabularyManager: React.FC<VocabularyManagerProps> = ({ classId, i
               {words.map((item, index) => (
                 <div
                   key={item.id}
-                  className="flex items-center justify-between px-4 sm:px-6 py-3.5 bg-transparent transition-colors group"
+                  className="relative flex items-center justify-between gap-3 px-3.5 sm:px-6 py-3.5 bg-transparent hover:bg-slate-800/20 transition-colors group"
                 >
-                  {/* Left: German Article + Word + Audio */}
-                  <div className="flex items-center gap-2.5 min-w-0 pr-3">
+                  {/* Left (50%): Number + Article + Word + Audio */}
+                  <div className="w-1/2 flex items-center gap-2 min-w-0 pr-2">
                     <span className="text-xs text-slate-500 font-mono w-6 shrink-0 text-right">
                       {(currentPage - 1) * itemsPerPage + index + 1}.
                     </span>
 
                     <ArticleBadge article={item.article} />
 
-                    <span className="font-extrabold text-white text-sm sm:text-base tracking-wide truncate group-hover:text-brand-400 transition-colors">
+                    <span className="font-extrabold text-white text-xs sm:text-base tracking-wide break-words whitespace-normal group-hover:text-brand-400 transition-colors flex-1 min-w-0">
                       {item.word}
                     </span>
 
                     <button
                       type="button"
                       onClick={() => playAudio(`${item.article || ''} ${item.word}`)}
-                      className="p-1.5 rounded-lg text-slate-500 hover:text-brand-400 hover:bg-brand-500/10 transition-colors shrink-0"
+                      className="p-1 rounded-lg text-slate-500 hover:text-brand-400 hover:bg-brand-500/10 transition-colors shrink-0 cursor-pointer"
                       title="Səsli tələffüz"
                     >
                       <Volume2 className="w-4 h-4" />
                     </button>
                   </div>
 
-                  {/* Center Leader (Visual dictionary connector on wide screens) */}
-                  <div className="hidden md:flex flex-1 items-center px-4">
-                    <div className="w-full border-b border-dashed border-slate-700/30" />
-                    <ArrowRight className="w-3.5 h-3.5 text-slate-500 shrink-0 ml-2 group-hover:translate-x-1 transition-transform" />
-                  </div>
-
-                  {/* Right: Azerbaijani Translation + Delete */}
-                  <div className="flex items-center gap-4 shrink-0 pl-2">
-                    <span className="font-bold text-slate-200 text-sm sm:text-base text-right group-hover:text-brand-400 transition-colors">
+                  {/* Right (50%): Azerbaijani Translation aligned to the end */}
+                  <div className="w-1/2 flex items-center justify-end min-w-0 pl-2 pr-8 sm:pr-10 text-right">
+                    <span className="font-bold text-slate-200 text-xs sm:text-base text-right break-words whitespace-normal group-hover:text-brand-300 transition-colors min-w-0">
                       {item.translation}
                     </span>
-
-                    {!isStudent && (
-                      <button
-                        type="button"
-                        onClick={() => setWordToDelete(item.id)}
-                        className="p-1.5 rounded-lg text-slate-500 hover:text-rose-400 hover:bg-rose-500/10 opacity-70 group-hover:opacity-100 transition-all"
-                        title="Sözü sil"
-                      >
-                        <Trash2 className="w-3.5 h-3.5" />
-                      </button>
-                    )}
                   </div>
+
+                  {/* Absolute Delete Button (only visible on row hover) */}
+                  {!isStudent && (
+                    <button
+                      type="button"
+                      onClick={() => setWordToDelete(item.id)}
+                      className="absolute right-2 sm:right-3.5 top-1/2 -translate-y-1/2 p-1.5 rounded-lg text-slate-400 hover:text-rose-400 hover:bg-rose-500/15 opacity-0 group-hover:opacity-100 transition-all duration-200 cursor-pointer"
+                      title="Sözü sil"
+                    >
+                      <Trash2 className="w-4 h-4" />
+                    </button>
+                  )}
                 </div>
               ))}
             </div>
