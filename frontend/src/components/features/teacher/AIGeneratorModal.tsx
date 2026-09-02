@@ -99,6 +99,7 @@ export const AIGeneratorModal: React.FC<AIGeneratorModalProps> = ({ isOpen, onCl
               />
             </div>
 
+
             <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 p-4 rounded-xl bg-slate-950/60 border border-slate-800">
               <Select
                 label="Language"

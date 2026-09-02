@@ -39,18 +39,18 @@ export const Badge: React.FC<BadgeProps> = ({
 
 export const ArticleBadge: React.FC<{ article?: GermanArticle; className?: string }> = ({ article, className }) => {
   if (!article) return null;
+  const artLower = article.toLowerCase().trim() as 'der' | 'die' | 'das';
 
   const config = {
-    der: { label: 'der', styles: 'bg-sky-500/20 text-sky-300 border-sky-500/40 font-bold' },
-    die: { label: 'die', styles: 'bg-rose-500/20 text-rose-300 border-rose-500/40 font-bold' },
-    das: { label: 'das', styles: 'bg-emerald-500/20 text-emerald-300 border-emerald-500/40 font-bold' },
-    '': { label: '', styles: '' },
+    der: { label: 'der', styles: 'bg-sky-500/15 text-sky-400 border-sky-500/30 font-extrabold' },
+    die: { label: 'die', styles: 'bg-rose-500/15 text-rose-400 border-rose-500/30 font-extrabold' },
+    das: { label: 'das', styles: 'bg-amber-500/15 text-amber-400 border-amber-500/30 font-extrabold' },
   };
 
-  const active = config[article] || config['der'];
+  const active = config[artLower] || config['der'];
 
   return (
-    <span className={clsx('inline-flex items-center px-2 py-0.5 text-xs rounded-md border uppercase tracking-wide', active.styles, className)}>
+    <span className={clsx('inline-flex items-center px-2 py-0.5 text-[11px] rounded-md border uppercase tracking-wider shadow-xs', active.styles, className)}>
       {active.label}
     </span>
   );

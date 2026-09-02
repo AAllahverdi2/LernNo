@@ -62,7 +62,6 @@ export const de: TranslationKeys = {
     tabs: {
       overview: 'Übersicht',
       vocabulary: 'Wortschatz',
-      students: 'Schüler',
       assignments: 'Aufgaben',
       analytics: 'Analysen',
     },

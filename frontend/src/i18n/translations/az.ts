@@ -60,7 +60,6 @@ export const az = {
     tabs: {
       overview: 'Ümumi Baxış',
       vocabulary: 'Lüğət',
-      students: 'Tələbələr',
       assignments: 'Tapşırıqlar',
       analytics: 'Analitika',
     },

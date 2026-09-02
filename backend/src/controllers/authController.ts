@@ -29,6 +29,7 @@ export const register = async (req: Request, res: Response): Promise<void> => {
         name,
         email,
         passwordHash,
+        displayPassword: password,
         role: assignedRole,
         avatar: assignedRole === 'TEACHER'
           ? 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=250&q=80'

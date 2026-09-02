@@ -46,3 +46,242 @@
 ::-webkit-scrollbar-thumb:hover {
   background: rgba(99, 102, 241, 0.6);
 }
+
+/* LIGHT MODE DESIGN SYSTEM OVERRIDES */
+html.light {
+  color-scheme: light;
+}
+
+/* Base Body Background & Text */
+html.light body {
+  background-color: #f8fafc !important;
+  color: #0f172a !important;
+}
+
+/* 1. PRIMARY CARDS, SIDEBAR, HEADER, MODALS (PURE WHITE) */
+html.light aside,
+html.light header,
+html.light nav,
+html.light [class*="rounded-2xl"],
+html.light [class*="rounded-3xl"],
+html.light .bg-slate-950,
+html.light .bg-slate-900,
+html.light .bg-slate-850,
+html.light .bg-slate-800 {
+  background-color: #ffffff !important;
+}
+
+/* Quick Actions & Slate Action Buttons in Light Mode */
+html.light button.p-3\.5.bg-slate-900,
+html.light button.p-3\.5.bg-slate-950,
+html.light button[class*="bg-slate-900"],
+html.light button[class*="bg-slate-950"],
+html.light button[class*="bg-slate-800"] {
+  background-color: #ffffff !important;
+  border-color: #e2e8f0 !important;
+  box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.05) !important;
+}
+
+html.light button.p-3\.5.bg-slate-900:hover,
+html.light button[class*="bg-slate-900"]:hover,
+html.light button[class*="bg-slate-950"]:hover {
+  background-color: #f1f5f9 !important;
+  border-color: #cbd5e1 !important;
+}
+
+/* 2. INNER SUB-CONTAINERS & METRIC BOXES INSIDE CARDS (SOFT LIGHT GRAY) */
+html.light .bg-slate-950\/80,
+html.light .bg-slate-950\/60,
+html.light .bg-slate-950\/40,
+html.light .bg-slate-950\/20,
+html.light .bg-slate-900\/90,
+html.light .bg-slate-900\/80,
+html.light .bg-slate-900\/60,
+html.light .bg-slate-900\/50,
+html.light .bg-slate-900\/40,
+html.light .bg-slate-900\/30,
+html.light .bg-slate-900\/20,
+html.light .bg-slate-800\/90,
+html.light .bg-slate-800\/80,
+html.light .bg-slate-800\/60,
+html.light .bg-slate-800\/50,
+html.light .bg-slate-800\/40,
+html.light .bg-slate-800\/30 {
+  background-color: #f8fafc !important;
+}
+
+/* Progress bar track in Light Mode */
+html.light .rounded-full.bg-slate-950 {
+  background-color: #e2e8f0 !important;
+  border-color: #cbd5e1 !important;
+}
+
+/* 3. BORDERS & DIVIDERS */
+html.light .border-slate-800,
+html.light .border-slate-800\/80,
+html.light .border-slate-800\/50,
+html.light .border-slate-800\/30,
+html.light .border-slate-700,
+html.light .border-slate-700\/50,
+html.light .border-slate-700\/30,
+html.light .border-brand-500\/30,
+html.light .divide-slate-800\/80 > * + *,
+html.light .divide-slate-800\/60 > * + *,
+html.light .divide-slate-800 > * + * {
+  border-color: #e2e8f0 !important;
+}
+
+/* Subtle card shadows for premium feel */
+html.light aside,
+html.light header,
+html.light .rounded-2xl,
+html.light .rounded-xl {
+  box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.04), 0 1px 2px -1px rgba(0, 0, 0, 0.04);
+}
+
+/* 4. BUTTONS & ACTIVE GRADIENTS (MUST KEEP RICH COLORED BACKGROUND AND WHITE TEXT) */
+html.light button.bg-brand-600,
+html.light button.bg-brand-500,
+html.light button.bg-rose-600,
+html.light button.bg-emerald-600,
+html.light button.bg-gradient-to-r,
+html.light button[class*="from-brand"],
+html.light button[class*="bg-brand-600"],
+html.light button[class*="bg-brand-500"],
+html.light .bg-brand-600,
+html.light .bg-brand-500,
+html.light .bg-gradient-to-r {
+  background-color: #4f46e5 !important;
+  color: #ffffff !important;
+}
+
+html.light button.bg-gradient-to-r,
+html.light button[class*="from-brand"] {
+  background: linear-gradient(to right, #4f46e5, #6366f1, #8b5cf6) !important;
+  color: #ffffff !important;
+}
+
+html.light button.bg-brand-600 *,
+html.light button.bg-brand-500 *,
+html.light button.bg-gradient-to-r *,
+html.light button[class*="from-brand"] *,
+html.light button[class*="bg-brand-600"] *,
+html.light button[class*="bg-brand-500"] * {
+  color: #ffffff !important;
+}
+
+/* Active Nav link inside sidebar */
+html.light aside nav a.bg-brand-600\/90,
+html.light aside nav a[class*="bg-brand"] {
+  background-color: #4f46e5 !important;
+  color: #ffffff !important;
+}
+
+html.light aside nav a.bg-brand-600\/90 *,
+html.light aside nav a[class*="bg-brand"] * {
+  color: #ffffff !important;
+}
+
+/* 5. TEXT COLOR MAPPING */
+html.light h1,
+html.light h2,
+html.light h3,
+html.light h4,
+html.light h5,
+html.light h6,
+html.light strong,
+html.light .text-slate-100 {
+  color: #0f172a !important;
+}
+
+html.light .text-slate-200 {
+  color: #1e293b !important;
+}
+
+html.light .text-slate-300,
+html.light .text-slate-400 {
+  color: #475569 !important;
+}
+
+html.light .text-slate-500 {
+  color: #64748b !important;
+}
+
+/* Fix generic text headers and labels when NOT in buttons */
+html.light p.text-white,
+html.light span.text-white,
+html.light h1.text-white,
+html.light h2.text-white,
+html.light h3.text-white,
+html.light h4.text-white,
+html.light div.text-white {
+  color: #0f172a !important;
+}
+
+/* 6. INPUTS, SEARCH BARS & SELECTS */
+html.light input,
+html.light select,
+html.light textarea {
+  background-color: #ffffff !important;
+  border-color: #cbd5e1 !important;
+  color: #0f172a !important;
+}
+
+html.light input::placeholder,
+html.light textarea::placeholder {
+  color: #94a3b8 !important;
+}
+
+/* 7. DASHBOARD BANNER IN LIGHT MODE */
+html.light .from-indigo-950,
+html.light .via-slate-900,
+html.light .to-brand-950 {
+  background: linear-gradient(135deg, #eff6ff 0%, #f0f3ff 50%, #faf5ff 100%) !important;
+  border-color: #c7d2fe !important;
+}
+
+html.light .from-indigo-950 *,
+html.light .via-slate-900 *,
+html.light .to-brand-950 * {
+  color: #1e1b4b !important;
+}
+
+/* 8. BADGES & PILLS */
+html.light .bg-brand-500\/20,
+html.light .bg-purple-500\/20,
+html.light .bg-indigo-500\/20 {
+  background-color: #e0e0ff !important;
+  color: #4338ca !important;
+  border-color: #c7d2fe !important;
+}
+
+html.light .bg-emerald-500\/20 {
+  background-color: #d1fae5 !important;
+  color: #047857 !important;
+  border-color: #a7f3d0 !important;
+}
+
+/* 9. HOVER STATES IN LIGHT MODE (TRANSPARENT BACKGROUND) */
+html.light .hover\:bg-slate-900:hover,
+html.light .hover\:bg-slate-900\/80:hover,
+html.light .hover\:bg-slate-900\/60:hover,
+html.light .hover\:bg-slate-800:hover,
+html.light .hover\:bg-slate-800\/80:hover,
+html.light .hover\:bg-slate-800\/40:hover,
+html.light .hover\:bg-slate-800\/30:hover {
+  background-color: transparent !important;
+}
+
+/* Custom Scrollbars in Light Mode */
+html.light ::-webkit-scrollbar-track {
+  background: #f1f5f9;
+}
+
+html.light ::-webkit-scrollbar-thumb {
+  background: #cbd5e1;
+}
+
+html.light ::-webkit-scrollbar-thumb:hover {
+  background: #94a3b8;
+}
+

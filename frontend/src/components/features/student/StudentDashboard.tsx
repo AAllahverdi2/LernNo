@@ -1,45 +1,42 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../../../context/AuthContext';
-import { useQuiz } from '../../../hooks/useQuiz';
+import { useClasses } from '../../../hooks/useClasses';
 import { StudentInvitationBanner } from './StudentInvitationBanner';
 import { Card } from '../../common/Card';
 import { Button } from '../../common/Button';
-import { Progress } from '../../common/Progress';
 import {
-  Flame,
+  GraduationCap,
   BookOpen,
-  RotateCcw,
-  Award,
   ArrowRight,
-  TrendingUp,
-  BrainCircuit,
+  Clock,
+  User,
+  Flame,
 } from 'lucide-react';
 
 export const StudentDashboard: React.FC = () => {
   const { user } = useAuth();
   const navigate = useNavigate();
-  const { progress } = useQuiz();
-
-  const learnedCount = progress?.dailyLearned || 7;
-  const goalCount = progress?.dailyGoal || 10;
-  const streakCount = progress?.currentStreak || 7;
+  const { classes, isLoading } = useClasses();
 
   return (
     <div className="space-y-8 animate-fadeIn">
       {/* Student Invitation Banner (shows pending class invitations) */}
       <StudentInvitationBanner />
 
-      {/* Header Greeting */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 p-6 rounded-3xl bg-gradient-to-r from-brand-950/80 via-slate-900 to-indigo-950/80 border border-brand-500/30 shadow-2xl">
+      {/* Header Greeting Banner */}
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 p-6 sm:p-8 rounded-3xl bg-gradient-to-r from-brand-950 via-slate-900 to-indigo-950 border border-brand-500/30 shadow-2xl">
         <div>
           <div className="flex items-center gap-2 mb-1">
-            <h1 className="text-2xl sm:text-3xl font-extrabold text-white">
-              Good morning, {user?.name || 'Anna'} 👋
-            </h1>
+            <span className="text-[10px] font-extrabold uppercase tracking-wider px-2.5 py-0.5 rounded-full bg-brand-500/20 text-brand-300 border border-brand-500/30">
+              Tələbə Portalı
+            </span>
           </div>
-          <p className="text-slate-300 text-xs sm:text-sm">
-            German A2 Workspace • Keep momentum to master today's vocabulary set!
+          <h1 className="text-2xl sm:text-3xl font-extrabold text-white">
+            Salam, {user?.name || 'Tələbə'} 👋
+          </h1>
+          <p className="text-slate-300 text-xs sm:text-sm mt-1">
+            Müəlliminizin sizi daxil etdiyi aktiv qruplar və təyin olunmuş lüğətlər aşağıda qeyd edilib.
           </p>
         </div>
 
@@ -49,123 +46,104 @@ export const StudentDashboard: React.FC = () => {
             <Flame className="w-6 h-6 fill-amber-400 animate-bounce" />
           </div>
           <div>
-            <span className="block text-[10px] text-amber-300/80 uppercase font-semibold">Current Streak</span>
-            <span className="text-lg">{streakCount} Day Streak 🔥</span>
+            <span className="block text-[10px] text-amber-300/80 uppercase font-semibold">Öyrənmə Seriyası</span>
+            <span className="text-lg">{user?.streak || 7} Günlük Aktiv 🔥</span>
           </div>
         </div>
       </div>
 
-      {/* Today's Goal Bar */}
-      <Card className="p-5 border-brand-500/30 bg-slate-900/80">
-        <div className="flex items-center justify-between mb-2">
-          <span className="text-xs font-bold text-slate-300 flex items-center gap-2">
-            <BrainCircuit className="w-4 h-4 text-brand-400" />
-            Today's Progress Goal
-          </span>
-          <span className="text-xs font-extrabold text-brand-300">
-            {learnedCount} / {goalCount} words learned
-          </span>
+      {/* Classes Section */}
+      <div className="space-y-4">
+        <div className="flex items-center justify-between">
+          <div>
+            <h2 className="text-xl font-extrabold text-white flex items-center gap-2.5">
+              <GraduationCap className="w-6 h-6 text-brand-400" />
+              Mənim Qruplarım ({classes.length})
+            </h2>
+            <p className="text-xs text-slate-400 mt-0.5">
+              Daxil olduğunuz qrup üzrə müəllimin paylaşdığı bütün lüğətləri öyrənin.
+            </p>
+          </div>
         </div>
-        <Progress value={(learnedCount / goalCount) * 100} size="md" />
-      </Card>
 
-      {/* Main Action Hero Cards */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-        {/* Card 1: Today's Lesson */}
-        <Card hoverEffect className="p-6 border-brand-500/30 bg-gradient-to-br from-slate-900 via-slate-900 to-indigo-950/60 flex flex-col justify-between group">
-          <div>
-            <div className="p-3 w-fit rounded-2xl bg-brand-500/15 text-brand-400 border border-brand-500/30 mb-4 group-hover:scale-110 transition-transform">
-              <BookOpen className="w-6 h-6" />
-            </div>
-            <span className="text-[10px] font-bold uppercase tracking-wider text-brand-400">Day 4 • Travel</span>
-            <h3 className="text-xl font-bold text-white mt-1 mb-2">Today's Lesson</h3>
-            <p className="text-xs text-slate-300 mb-6">
-              10 new German words ready for study (Bahnhof, Verspätung, Fahrkarte...).
-            </p>
+        {isLoading ? (
+          <div className="p-12 text-center text-slate-400 text-xs animate-pulse">
+            Qruplar yüklənir...
           </div>
-          <Button
-            variant="gradient"
-            rightIcon={<ArrowRight className="w-4 h-4" />}
-            onClick={() => navigate('/student/today')}
-          >
-            Start Learning →
-          </Button>
-        </Card>
-
-        {/* Card 2: Review Queue */}
-        <Card hoverEffect className="p-6 border-violet-500/30 bg-gradient-to-br from-slate-900 via-slate-900 to-violet-950/60 flex flex-col justify-between group">
-          <div>
-            <div className="p-3 w-fit rounded-2xl bg-violet-500/15 text-violet-400 border border-violet-500/30 mb-4 group-hover:scale-110 transition-transform">
-              <RotateCcw className="w-6 h-6" />
+        ) : classes.length === 0 ? (
+          <Card className="p-12 text-center border-dashed border-slate-800 bg-slate-900/40">
+            <div className="w-16 h-16 rounded-3xl bg-brand-500/10 text-brand-400 border border-brand-500/20 flex items-center justify-center mx-auto mb-4">
+              <GraduationCap className="w-8 h-8" />
             </div>
-            <span className="text-[10px] font-bold uppercase tracking-wider text-violet-400">Spaced Repetition</span>
-            <h3 className="text-xl font-bold text-white mt-1 mb-2">Review Words</h3>
-            <p className="text-xs text-slate-300 mb-6">
-              15 words ready for review (Unterkunft, günstig, Einkäufe).
-            </p>
-          </div>
-          <Button
-            variant="secondary"
-            className="border-violet-500/40 text-violet-200 hover:bg-violet-500/20"
-            rightIcon={<ArrowRight className="w-4 h-4" />}
-            onClick={() => navigate('/student/review')}
-          >
-            Start Review →
-          </Button>
-        </Card>
-
-        {/* Card 3: Quiz */}
-        <Card hoverEffect className="p-6 border-emerald-500/30 bg-gradient-to-br from-slate-900 via-slate-900 to-emerald-950/60 flex flex-col justify-between group">
-          <div>
-            <div className="p-3 w-fit rounded-2xl bg-emerald-500/15 text-emerald-400 border border-emerald-500/30 mb-4 group-hover:scale-110 transition-transform">
-              <Award className="w-6 h-6" />
-            </div>
-            <span className="text-[10px] font-bold uppercase tracking-wider text-emerald-400">Test Mastery</span>
-            <h3 className="text-xl font-bold text-white mt-1 mb-2">Daily Quiz</h3>
-            <p className="text-xs text-slate-300 mb-6">
-              10 interactive questions to lock in today's German vocabulary.
-            </p>
-          </div>
-          <Button
-            variant="success"
-            rightIcon={<ArrowRight className="w-4 h-4" />}
-            onClick={() => navigate('/student/quiz')}
-          >
-            Take Quiz →
-          </Button>
-        </Card>
-      </div>
-
-      {/* Weekly Progress Chart Widget */}
-      <Card className="p-6 space-y-4">
-        <div className="flex items-center justify-between border-b border-slate-800 pb-4">
-          <div>
-            <h3 className="text-base font-bold text-white flex items-center gap-2">
-              <TrendingUp className="w-5 h-5 text-brand-400" />
-              Weekly Learning Activity
+            <h3 className="text-lg font-bold text-white mb-1">
+              Hələ Heç Bir Qrupa Əlavə Edilməmisiniz
             </h3>
-            <p className="text-xs text-slate-400">Your daily study time and words learned this week.</p>
-          </div>
-          <Button variant="ghost" size="sm" onClick={() => navigate('/student/progress')}>
-            View Detailed Progress
-          </Button>
-        </div>
+            <p className="text-xs text-slate-400 max-w-md mx-auto">
+              Müəlliminiz sizi qrupa əlavə etdikdə və ya dəvət göndərdikdə qrupunuz burada görünəcək.
+            </p>
+          </Card>
+        ) : (
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
+            {classes.map((cls: any) => (
+              <Card
+                key={cls.id}
+                hoverEffect
+                className="p-6 border-slate-800 hover:border-brand-500/50 bg-slate-900/70 hover:bg-slate-900/90 transition-all flex flex-col justify-between group shadow-xl"
+              >
+                <div className="space-y-4">
+                  {/* Top Bar: Level & Word Count Badges */}
+                  <div className="flex items-center justify-between">
+                    <span className="px-2.5 py-1 rounded-xl bg-brand-500/20 text-brand-300 text-xs font-extrabold border border-brand-500/30">
+                      {cls.level} Səviyyəsi
+                    </span>
+                    <span className="px-2.5 py-1 rounded-xl bg-slate-800 text-slate-300 text-xs font-semibold flex items-center gap-1.5 border border-slate-700">
+                      <BookOpen className="w-3.5 h-3.5 text-brand-400" />
+                      {cls.vocabularyCount || 0} söz
+                    </span>
+                  </div>
 
-        <div className="grid grid-cols-7 gap-2 text-center pt-2">
-          {progress?.weeklyActivity.map((item, idx) => (
-            <div key={idx} className="space-y-2 group">
-              <div className="h-32 bg-slate-950 rounded-xl border border-slate-800/80 p-1 flex flex-col justify-end">
-                <div
-                  className="w-full bg-gradient-to-t from-brand-600 to-indigo-400 rounded-lg transition-all group-hover:brightness-125"
-                  style={{ height: `${Math.min(100, (item.wordsCount / 25) * 100)}%` }}
-                />
-              </div>
-              <span className="text-xs font-bold text-slate-300 block">{item.day}</span>
-              <span className="text-[10px] text-slate-400 block">{item.wordsCount} words</span>
-            </div>
-          ))}
-        </div>
-      </Card>
+                  {/* Title & Language */}
+                  <div>
+                    <h3 className="text-lg font-bold text-white group-hover:text-brand-300 transition-colors">
+                      {cls.name}
+                    </h3>
+                    <p className="text-xs text-slate-400 mt-0.5 font-medium">
+                      {cls.language} ➔ Azərbaycan Dili
+                    </p>
+                  </div>
+
+                  {/* Schedule & Teacher Info */}
+                  <div className="space-y-2 pt-2 border-t border-slate-800/80 text-xs text-slate-300">
+                    <div className="flex items-center gap-2">
+                      <Clock className="w-4 h-4 text-slate-500 shrink-0" />
+                      <span>{cls.schedule || 'Dərs qrafiki təyin edilməyib'}</span>
+                    </div>
+                    {cls.teacher && (
+                      <div className="flex items-center gap-2">
+                        <User className="w-4 h-4 text-slate-500 shrink-0" />
+                        <span>Müəllim: <strong className="text-slate-200">{cls.teacher.name}</strong></span>
+                      </div>
+                    )}
+                  </div>
+                </div>
+
+                {/* Card Action Button */}
+                <div className="pt-5 mt-5 border-t border-slate-800">
+                  <Button
+                    variant="gradient"
+                    size="sm"
+                    className="w-full justify-between"
+                    rightIcon={<ArrowRight className="w-4 h-4" />}
+                    onClick={() => navigate(`/student/vocabulary?classId=${cls.id}`)}
+                  >
+                    Lüğətlərə Və Sözlərə Bax →
+                  </Button>
+                </div>
+              </Card>
+            ))}
+          </div>
+        )}
+      </div>
     </div>
   );
 };

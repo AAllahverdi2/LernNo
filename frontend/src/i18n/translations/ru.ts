@@ -62,7 +62,6 @@ export const ru: TranslationKeys = {
     tabs: {
       overview: 'Обзор',
       vocabulary: 'Словарь',
-      students: 'Студенты',
       assignments: 'Задания',
       analytics: 'Аналитика',
     },

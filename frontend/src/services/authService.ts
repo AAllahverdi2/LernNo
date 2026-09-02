@@ -1,6 +1,6 @@
 import type { User } from '../types';
 
-const API_BASE_URL = import.meta.env.VITE_API_URL || 'https://lern-no.vercel.app/api';
+const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://127.0.0.1:5000/api';
 
 export const authService = {
   async register(data: { name: string; email: string; password: string; role: string }): Promise<{ token: string; user: User }> {
@@ -59,5 +59,16 @@ export const authService = {
       throw new Error(result.message || 'Failed to fetch users list.');
     }
     return result.users;
+  },
+
+  async deleteUser(token: string, userId: string): Promise<void> {
+    const response = await fetch(`${API_BASE_URL}/admin/users/${userId}`, {
+      method: 'DELETE',
+      headers: { Authorization: `Bearer ${token}` },
+    });
+    const result = await response.json();
+    if (!response.ok) {
+      throw new Error(result.message || 'İstifadəçi silinə bilmədi.');
+    }
   },
 };

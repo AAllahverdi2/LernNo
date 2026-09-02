@@ -5,15 +5,18 @@ import { Input } from '../../common/Input';
 import { Select } from '../../common/Select';
 import { Tabs } from '../../common/Tabs';
 import { useAuth } from '../../../context/AuthContext';
-import { User, Bell, Sparkles, Sliders, Check } from 'lucide-react';
+import { useTheme } from '../../../context/ThemeContext';
+import { User, Bell, Sparkles, Sliders, Check, Sun, Moon, Palette } from 'lucide-react';
 
 export const TeacherSettings: React.FC = () => {
   const { user } = useAuth();
+  const { theme, setTheme } = useTheme();
   const [activeTab, setActiveTab] = useState('profile');
   const [saved, setSaved] = useState(false);
 
   const tabs = [
     { id: 'profile', label: 'Profile', icon: <User className="w-4 h-4" /> },
+    { id: 'appearance', label: 'Xarici Görünüş', icon: <Palette className="w-4 h-4" /> },
     { id: 'class-settings', label: 'Class Settings', icon: <Sliders className="w-4 h-4" /> },
     { id: 'notifications', label: 'Notifications', icon: <Bell className="w-4 h-4" /> },
     { id: 'ai-settings', label: 'AI Settings', icon: <Sparkles className="w-4 h-4" /> },
@@ -29,7 +32,7 @@ export const TeacherSettings: React.FC = () => {
     <div className="space-y-6 max-w-4xl">
       <div>
         <h1 className="text-2xl font-extrabold text-white">Teacher Settings</h1>
-        <p className="text-xs text-slate-400 mt-1">Manage profile information, class defaults, and AI model preferences.</p>
+        <p className="text-xs text-slate-400 mt-1">Manage profile information, theme preferences, and class defaults.</p>
       </div>
 
       <Tabs tabs={tabs} activeTab={activeTab} onChange={setActiveTab} />
@@ -44,6 +47,57 @@ export const TeacherSettings: React.FC = () => {
                 <Input label="Email Address" defaultValue={user?.email || 'teacher@demo.com'} />
               </div>
               <Input label="Professional Title" defaultValue="Senior German Lecturer & Curriculum Specialist" />
+            </div>
+          )}
+
+          {activeTab === 'appearance' && (
+            <div className="space-y-4">
+              <h3 className="text-base font-bold text-white">Sistem Mövzusu (Theme)</h3>
+              <p className="text-xs text-slate-400">Tətbiqin görünüşünü Qaranlıq (Dark Mode) və ya İşıqlı (White Mode) olaraq təyin edin.</p>
+              
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-2">
+                <button
+                  type="button"
+                  onClick={() => setTheme('dark')}
+                  className={`p-5 rounded-2xl border text-left transition-all flex items-center justify-between gap-4 ${
+                    theme === 'dark'
+                      ? 'bg-brand-950/40 border-brand-500 ring-2 ring-brand-500/30'
+                      : 'bg-slate-900/50 border-slate-800 hover:border-slate-700'
+                  }`}
+                >
+                  <div className="flex items-center gap-3.5">
+                    <div className="p-3 rounded-xl bg-slate-900 text-purple-400 border border-slate-800">
+                      <Moon className="w-5 h-5" />
+                    </div>
+                    <div>
+                      <h4 className="text-sm font-bold text-white">Qaranlıq Rejim (Dark Mode)</h4>
+                      <p className="text-xs text-slate-400 mt-0.5">Sleek dark theme with vibrant accents</p>
+                    </div>
+                  </div>
+                  {theme === 'dark' && <Check className="w-5 h-5 text-brand-400 shrink-0" />}
+                </button>
+
+                <button
+                  type="button"
+                  onClick={() => setTheme('light')}
+                  className={`p-5 rounded-2xl border text-left transition-all flex items-center justify-between gap-4 ${
+                    theme === 'light'
+                      ? 'bg-amber-500/10 border-amber-500 ring-2 ring-amber-500/30'
+                      : 'bg-slate-900/50 border-slate-800 hover:border-slate-700'
+                  }`}
+                >
+                  <div className="flex items-center gap-3.5">
+                    <div className="p-3 rounded-xl bg-amber-500/20 text-amber-500 border border-amber-500/30">
+                      <Sun className="w-5 h-5" />
+                    </div>
+                    <div>
+                      <h4 className="text-sm font-bold text-white">İşıqlı Rejim (White Mode)</h4>
+                      <p className="text-xs text-slate-400 mt-0.5">Clean light theme for bright environments</p>
+                    </div>
+                  </div>
+                  {theme === 'light' && <Check className="w-5 h-5 text-amber-500 shrink-0" />}
+                </button>
+              </div>
             </div>
           )}
 

@@ -2,12 +2,14 @@ import React, { useState, useEffect } from 'react';
 import { useAuth } from '../../../context/AuthContext';
 import { classService } from '../../../services/classService';
 import { BellRing, Check, X, Loader2 } from 'lucide-react';
+import { Toast } from '../../common/Toast';
 
 export const StudentInvitationBanner: React.FC = () => {
   const { token } = useAuth();
   const [invitations, setInvitations] = useState<any[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [respondingId, setRespondingId] = useState<string | null>(null);
+  const [toast, setToast] = useState<{ type: 'success' | 'error' | 'info'; title: string; message?: string } | null>(null);
 
   const fetchInvitations = async () => {
     if (!token) return;
@@ -33,7 +35,7 @@ export const StudentInvitationBanner: React.FC = () => {
       // Remove from list
       setInvitations((prev) => prev.filter((inv) => inv.id !== enrollmentId));
     } catch (err: any) {
-      alert(err.message || 'Xəta baş verdi.');
+      setToast({ type: 'error', title: 'Xəta', message: err.message || 'Xəta baş verdi.' });
     } finally {
       setRespondingId(null);
     }
@@ -93,6 +95,7 @@ export const StudentInvitationBanner: React.FC = () => {
           </div>
         </div>
       ))}
+      {toast && <Toast type={toast.type} title={toast.title} message={toast.message} onClose={() => setToast(null)} />}
     </div>
   );
 };

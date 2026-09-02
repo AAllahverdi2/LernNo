@@ -9,18 +9,26 @@ import type { GermanArticle, DifficultyLevel } from '../../../types';
 interface AddVocabularyModalProps {
   isOpen: boolean;
   onClose: () => void;
+  defaultTopic?: string;
+  defaultLanguage?: string;
 }
 
-export const AddVocabularyModal: React.FC<AddVocabularyModalProps> = ({ isOpen, onClose }) => {
+export const AddVocabularyModal: React.FC<AddVocabularyModalProps> = ({
+  isOpen,
+  onClose,
+  defaultTopic = 'Ümumi',
+  defaultLanguage = 'Alman Dili',
+}) => {
   const { addWord, isAdding } = useVocabulary();
 
   const [word, setWord] = useState('');
   const [translation, setTranslation] = useState('');
+  const [language, setLanguage] = useState(defaultLanguage);
   const [article, setArticle] = useState<GermanArticle>('der');
   const [plural, setPlural] = useState('');
   const [exampleSentence, setExampleSentence] = useState('');
-  const [topic, setTopic] = useState('Travel & Transportation');
-  const [dayNumber, setDayNumber] = useState(4);
+  const [topic, setTopic] = useState(defaultTopic);
+  const [dayNumber, setDayNumber] = useState(1);
   const [difficulty, setDifficulty] = useState<DifficultyLevel>('Medium');
 
   const handleSubmit = async (e: React.FormEvent, status: 'Published' | 'Draft' = 'Published') => {
@@ -30,6 +38,7 @@ export const AddVocabularyModal: React.FC<AddVocabularyModalProps> = ({ isOpen, 
     await addWord({
       word,
       translation,
+      language,
       article,
       plural,
       exampleSentence,
@@ -96,7 +105,23 @@ export const AddVocabularyModal: React.FC<AddVocabularyModalProps> = ({ isOpen, 
           />
         </div>
 
-        <div className="grid grid-cols-3 gap-3">
+        <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+          <Select
+            label="Dil (Language)"
+            options={[
+              { value: 'Alman Dili', label: '🇩🇪 Alman Dili' },
+              { value: 'İngilis Dili', label: '🇬🇧 İngilis Dili' },
+              { value: 'Rus Dili', label: '🇷🇺 Rus Dili' },
+              { value: 'Çex Dili', label: '🇨🇿 Çex Dili' },
+              { value: 'Fransız Dili', label: '🇫🇷 Fransız Dili' },
+              { value: 'İspan Dili', label: '🇪🇸 İspan Dili' },
+              { value: 'İtalyan Dili', label: '🇮🇹 İtalyan Dili' },
+              { value: 'Türk Dili', label: '🇹🇷 Türk Dili' },
+            ]}
+            value={language}
+            onChange={(e) => setLanguage(e.target.value)}
+          />
+
           <Input
             label="Day Number"
             type="number"

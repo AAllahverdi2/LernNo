@@ -1,75 +1,84 @@
 import type { VocabularyWord, VocabularySet } from '../types';
-import { mockVocabularyWords, mockVocabularySets } from '../data/mockVocabulary';
 
-const delay = (ms = 150) => new Promise((resolve) => setTimeout(resolve, ms));
+const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://127.0.0.1:5000/api';
 
-let localWords = [...mockVocabularyWords];
-let localSets = [...mockVocabularySets];
+const getAuthToken = () => {
+  return (
+    localStorage.getItem('lernno_jwt_token') ||
+    localStorage.getItem('token') ||
+    localStorage.getItem('lernno_token')
+  );
+};
 
 export const vocabularyService = {
   async getVocabularyWords(classId?: string): Promise<VocabularyWord[]> {
-    await delay();
-    if (classId) {
-      return localWords.filter((w) => w.classId === classId || w.classId === 'class-de-a2');
+    const token = getAuthToken();
+    if (token && classId) {
+      const response = await fetch(`${API_BASE_URL}/classes/${classId}`, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      const result = await response.json();
+      if (response.ok && result.class && Array.isArray(result.class.vocabularyWords)) {
+        return result.class.vocabularyWords;
+      }
     }
-    return [...localWords];
+    return [];
   },
 
   async getVocabularySets(classId?: string): Promise<VocabularySet[]> {
-    await delay();
-    if (classId) {
-      return localSets.filter((s) => s.classId === classId || s.classId === 'class-de-a2');
-    }
-    return [...localSets];
+    return [];
   },
 
   async addVocabularyWord(word: Partial<VocabularyWord>): Promise<VocabularyWord> {
-    await delay(200);
-    const newWord: VocabularyWord = {
-      id: `w-${Date.now()}-${Math.random().toString(36).substr(2, 4)}`,
-      classId: word.classId || 'class-de-a2',
-      dayNumber: word.dayNumber || 4,
-      topic: word.topic || 'General Vocabulary',
-      word: word.word || '',
-      translation: word.translation || '',
-      article: word.article || '',
-      plural: word.plural || '',
-      exampleSentence: word.exampleSentence || '',
-      exampleTranslation: word.exampleTranslation || '',
-      difficulty: word.difficulty || 'Medium',
-      status: word.status || 'Published',
-      phonetic: word.phonetic || '',
-      masteredByStudentCount: 0,
-    };
-    localWords = [newWord, ...localWords];
-    return newWord;
+    const token = getAuthToken();
+    if (!token) throw new Error('Sistemə daxil olunmayıb (Token tapılmadı).');
+    if (!word.classId) throw new Error('Qrup ID daxil edilməyib.');
+
+    const response = await fetch(`${API_BASE_URL}/classes/${word.classId}/vocabulary`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${token}`,
+      },
+      body: JSON.stringify(word),
+    });
+
+    const result = await response.json();
+    if (!response.ok) throw new Error(result.message || 'Söz əlavə edilə bilmədi.');
+    return result.word;
   },
 
-  async batchAddVocabularyWords(words: Partial<VocabularyWord>[]): Promise<VocabularyWord[]> {
-    await delay(300);
-    const createdList: VocabularyWord[] = words.map((w, index) => ({
-      id: `w-${Date.now()}-${index}`,
-      classId: w.classId || 'class-de-a2',
-      dayNumber: w.dayNumber || 4,
-      topic: w.topic || 'Batch Imported Vocabulary',
-      word: w.word || '',
-      translation: w.translation || '',
-      article: w.article || '',
-      plural: w.plural || '',
-      exampleSentence: w.exampleSentence || '',
-      exampleTranslation: w.exampleTranslation || '',
-      difficulty: w.difficulty || 'Medium',
-      status: w.status || 'Published',
-      masteredByStudentCount: 0,
-    }));
+  async batchAddVocabularyWords(words: Partial<VocabularyWord>[]): Promise<any> {
+    const token = getAuthToken();
+    const classId = words[0]?.classId || 'class-de-a2';
 
-    localWords = [...createdList, ...localWords];
-    return createdList;
+    if (!token) throw new Error('Sistemə daxil olunmayıb (Token tapılmadı).');
+
+    const response = await fetch(`${API_BASE_URL}/classes/${classId}/vocabulary/batch`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${token}`,
+      },
+      body: JSON.stringify({ words }),
+    });
+
+    const result = await response.json();
+    if (!response.ok) throw new Error(result.message || 'Kütləvi sözlər daxil edilə bilmədi.');
+    return result;
   },
 
   async deleteVocabularyWord(id: string): Promise<boolean> {
-    await delay(150);
-    localWords = localWords.filter((w) => w.id !== id);
+    const token = getAuthToken();
+    if (!token) throw new Error('Sistemə daxil olunmayıb (Token tapılmadı).');
+
+    const response = await fetch(`${API_BASE_URL}/classes/vocabulary/${id}`, {
+      method: 'DELETE',
+      headers: { Authorization: `Bearer ${token}` },
+    });
+
+    const result = await response.json();
+    if (!response.ok) throw new Error(result.message || 'Söz silinə bilmədi.');
     return true;
   },
 };

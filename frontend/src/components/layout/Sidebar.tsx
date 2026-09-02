@@ -33,20 +33,20 @@ export const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose }) => {
     { label: t('nav.dashboard'), path: '/teacher', icon: LayoutDashboard },
     { label: t('nav.myClasses'), path: '/teacher/classes', icon: GraduationCap },
     { label: t('nav.vocabulary'), path: '/teacher/vocabulary', icon: BookOpen },
-    { label: t('nav.assignments'), path: '/teacher/assignments', icon: FileCheck2 },
-    { label: t('nav.students'), path: '/teacher/students', icon: Users },
-    { label: t('nav.analytics'), path: '/teacher/analytics', icon: BarChart3 },
-    { label: t('nav.aiTools'), path: '/teacher/ai-tools', icon: Sparkles },
-    { label: t('nav.settings'), path: '/teacher/settings', icon: Settings },
+    // { label: t('nav.assignments'), path: '/teacher/assignments', icon: FileCheck2 },
+    // { label: t('nav.students'), path: '/teacher/students', icon: Users },
+    // { label: t('nav.analytics'), path: '/teacher/analytics', icon: BarChart3 },
+    // { label: t('nav.aiTools'), path: '/teacher/ai-tools', icon: Sparkles },
+    // { label: t('nav.settings'), path: '/teacher/settings', icon: Settings },
   ];
 
   const studentNav = [
-    { label: t('nav.dashboard'), path: '/student', icon: LayoutDashboard },
-    { label: t('nav.myClasses'), path: '/student/today', icon: BookOpen },
-    { label: t('nav.vocabulary'), path: '/student/vocabulary', icon: GraduationCap },
-    { label: t('nav.assignments'), path: '/student/review', icon: RotateCcw },
-    { label: t('nav.analytics'), path: '/student/progress', icon: BarChart3 },
-    { label: t('nav.settings'), path: '/student/settings', icon: Settings },
+    { label: t('nav.myClasses'), path: '/student', icon: GraduationCap },
+    { label: t('nav.vocabulary'), path: '/student/vocabulary', icon: BookOpen },
+    // { label: t('nav.dashboard'), path: '/student/dashboard', icon: LayoutDashboard },
+    // { label: t('nav.assignments'), path: '/student/review', icon: RotateCcw },
+    // { label: t('nav.analytics'), path: '/student/progress', icon: BarChart3 },
+    // { label: t('nav.settings'), path: '/student/settings', icon: Settings },
   ];
 
   const adminNav = [
@@ -150,16 +150,6 @@ export const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose }) => {
           })}
         </nav>
 
-        {/* Footer Actions */}
-        <div className="p-4 border-t border-slate-800/80">
-          <button
-            onClick={handleLogout}
-            className="w-full flex items-center gap-2.5 px-3.5 py-2.5 text-xs font-semibold text-slate-400 hover:text-rose-300 hover:bg-rose-500/10 rounded-xl transition-colors border border-transparent hover:border-rose-500/20"
-          >
-            <LogOut className="w-4 h-4 text-rose-400" />
-            <span>{t('nav.logout')}</span>
-          </button>
-        </div>
       </aside>
     </>
   );

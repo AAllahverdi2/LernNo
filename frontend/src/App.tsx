@@ -3,6 +3,7 @@ import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { AuthProvider, useAuth } from './context/AuthContext';
 import { LanguageProvider } from './context/LanguageContext';
+import { ThemeProvider } from './context/ThemeContext';
 import { DashboardLayout } from './components/layout/DashboardLayout';
 import { LoginPage } from './pages/LoginPage';
 
@@ -67,9 +68,10 @@ const ProtectedAdminRoute: React.FC<{ children: React.ReactNode }> = ({ children
 export const App: React.FC = () => {
   return (
     <QueryClientProvider client={queryClient}>
-      <LanguageProvider>
-        <AuthProvider>
-          <BrowserRouter>
+      <ThemeProvider>
+        <LanguageProvider>
+          <AuthProvider>
+            <BrowserRouter>
             <Routes>
               <Route path="/login" element={<LoginPage />} />
 
@@ -130,7 +132,8 @@ export const App: React.FC = () => {
           </BrowserRouter>
         </AuthProvider>
       </LanguageProvider>
-    </QueryClientProvider>
+    </ThemeProvider>
+  </QueryClientProvider>
   );
 };
 

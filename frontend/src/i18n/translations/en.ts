@@ -62,7 +62,6 @@ export const en: TranslationKeys = {
     tabs: {
       overview: 'Overview',
       vocabulary: 'Vocabulary',
-      students: 'Students',
       assignments: 'Assignments',
       analytics: 'Analytics',
     },

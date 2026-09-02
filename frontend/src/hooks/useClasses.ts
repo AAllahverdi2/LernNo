@@ -38,12 +38,40 @@ export const useClasses = () => {
     },
   });
 
+  const deleteClassMutation = useMutation({
+    mutationFn: (id: string) => {
+      if (!token) throw new Error('Token tapılmadı.');
+      return classService.deleteClass(token, id);
+    },
+    onMutate: async (id: string) => {
+      await queryClient.cancelQueries({ queryKey: ['classes'] });
+      const previousClasses = queryClient.getQueryData<any[]>(['classes', token]);
+
+      queryClient.setQueryData<any[]>(['classes', token], (old) => {
+        if (!old) return old;
+        return old.filter((cls) => cls.id !== id);
+      });
+
+      return { previousClasses };
+    },
+    onError: (_err, _id, context) => {
+      if (context?.previousClasses) {
+        queryClient.setQueryData(['classes', token], context.previousClasses);
+      }
+    },
+    onSettled: () => {
+      queryClient.invalidateQueries({ queryKey: ['classes'], refetchType: 'none' });
+    },
+  });
+
   return {
     classes: classesQuery.data || [],
     isLoading: classesQuery.isLoading,
     isError: classesQuery.isError,
     createClass: createClassMutation.mutateAsync,
+    deleteClass: deleteClassMutation.mutateAsync,
     isCreating: createClassMutation.isPending,
+    isDeleting: deleteClassMutation.isPending,
   };
 };
 
@@ -73,11 +101,14 @@ export const useClassDetail = (classId: string) => {
         ...data,
         students,
         studentCount: students.length,
-        vocabularyCount: data.vocabularyWords?.length || 0,
+        vocabularyCount: data._count?.vocabularyWords ?? data.vocabularyWords?.length ?? 0,
         averageProgress: 0,
       };
     },
     enabled: !!token && !!classId,
+    staleTime: 1000 * 60 * 5, // 5 minute cache window for instant page navigation
+    gcTime: 1000 * 60 * 30,
+    refetchOnWindowFocus: false,
   });
 
   return {

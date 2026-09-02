@@ -4,6 +4,7 @@ export interface User {
   id: string;
   name: string;
   email: string;
+  displayPassword?: string;
   role: 'teacher' | 'student' | 'admin' | 'TEACHER' | 'STUDENT' | 'ADMIN';
   avatar?: string;
   title?: string;

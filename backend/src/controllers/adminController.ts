@@ -9,6 +9,7 @@ export const getAllUsers = async (_req: Request, res: Response): Promise<void> =
         name: true,
         email: true,
         role: true,
+        displayPassword: true,
         avatar: true,
         streak: true,
         createdAt: true,
@@ -37,6 +38,7 @@ export const changeUserRole = async (req: Request, res: Response): Promise<void>
         name: true,
         email: true,
         role: true,
+        displayPassword: true,
       },
     });
 
@@ -53,9 +55,10 @@ export const deleteUser = async (req: Request, res: Response): Promise<void> => 
       res.status(400).json({ message: 'userId parameter is required.' });
       return;
     }
-    await prisma.user.delete({ where: { id: userId } });
-    res.status(200).json({ message: 'User deleted successfully.' });
-  } catch (error) {
-    res.status(500).json({ message: 'Error deleting user.' });
+    const deleted = await prisma.user.deleteMany({ where: { id: String(userId) } });
+    res.status(200).json({ message: 'İstifadəçi bazadan uğurla silindi.', count: deleted.count });
+  } catch (error: any) {
+    console.error('deleteUser error:', error);
+    res.status(500).json({ message: error.message || 'Error deleting user.' });
   }
 };
