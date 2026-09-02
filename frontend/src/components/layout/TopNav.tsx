@@ -1,19 +1,17 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Menu, Search, Bell, Sparkles, Sun, Moon, LogOut, Settings, ChevronDown, ShieldCheck } from 'lucide-react';
+import { Menu, Search, Bell, Sun, Moon, LogOut, Settings, ChevronDown, ShieldCheck } from 'lucide-react';
 import { useAuth } from '../../context/AuthContext';
 import { useTranslation } from '../../context/LanguageContext';
 import { useTheme } from '../../context/ThemeContext';
 import { Avatar } from '../common/Avatar';
-import { Button } from '../common/Button';
 import { LanguageSelector } from '../common/LanguageSelector';
 
 interface TopNavProps {
   onMenuClick: () => void;
-  onOpenAIGenerator?: () => void;
 }
 
-export const TopNav: React.FC<TopNavProps> = ({ onMenuClick, onOpenAIGenerator }) => {
+export const TopNav: React.FC<TopNavProps> = ({ onMenuClick }) => {
   const { user, role, logout } = useAuth();
   const { t } = useTranslation();
   const { theme, toggleTheme } = useTheme();
@@ -47,11 +45,11 @@ export const TopNav: React.FC<TopNavProps> = ({ onMenuClick, onOpenAIGenerator }
   };
 
   return (
-    <header className="sticky top-0 z-30 bg-slate-950/80 backdrop-blur-xl border-b border-slate-800/80 px-4 md:px-8 py-3 flex items-center justify-between gap-4">
-      <div className="flex items-center gap-3 flex-1">
+    <header className="sticky top-0 z-30 bg-slate-950/90 backdrop-blur-xl border-b border-slate-800/80 px-3 sm:px-6 md:px-8 py-2.5 sm:py-3 flex items-center justify-between gap-2 sm:gap-4 max-w-full">
+      <div className="flex items-center gap-2 sm:gap-3 min-w-0">
         <button
           onClick={onMenuClick}
-          className="p-2 rounded-xl text-slate-400 hover:text-white hover:bg-slate-900 md:hidden border border-slate-800"
+          className="p-2 rounded-xl text-slate-400 hover:text-white hover:bg-slate-900 md:hidden border border-slate-800 shrink-0"
         >
           <Menu className="w-5 h-5" />
         </button>
@@ -67,7 +65,7 @@ export const TopNav: React.FC<TopNavProps> = ({ onMenuClick, onOpenAIGenerator }
         </div>
       </div>
 
-      <div className="flex items-center gap-3">
+      <div className="flex items-center gap-1.5 sm:gap-2.5 shrink-0">
         {/* Language Switcher Dropdown */}
         <LanguageSelector />
 
@@ -75,7 +73,7 @@ export const TopNav: React.FC<TopNavProps> = ({ onMenuClick, onOpenAIGenerator }
         <button
           onClick={toggleTheme}
           title={theme === 'dark' ? 'İşıqlı Rejimə Keç' : 'Qaranlıq Rejimə Keç'}
-          className="p-2 rounded-xl text-slate-400 hover:text-amber-400 hover:bg-slate-900 border border-slate-800/80 transition-all duration-200"
+          className="p-2 rounded-xl text-slate-400 hover:text-amber-400 hover:bg-slate-900 border border-slate-800/80 transition-all duration-200 shrink-0"
         >
           {theme === 'dark' ? (
             <Sun className="w-4 h-4 text-amber-400 animate-fadeIn" />
@@ -84,31 +82,20 @@ export const TopNav: React.FC<TopNavProps> = ({ onMenuClick, onOpenAIGenerator }
           )}
         </button>
 
-        {role === 'teacher' && onOpenAIGenerator && (
-          <Button
-            size="sm"
-            variant="gradient"
-            leftIcon={<Sparkles className="w-3.5 h-3.5" />}
-            onClick={onOpenAIGenerator}
-          >
-            {t('nav.generateWithAI')}
-          </Button>
-        )}
-
-        <button className="relative p-2 rounded-xl text-slate-400 hover:text-white hover:bg-slate-900 border border-slate-800/80 transition-colors">
+        <button className="relative p-2 rounded-xl text-slate-400 hover:text-white hover:bg-slate-900 border border-slate-800/80 transition-colors shrink-0">
           <Bell className="w-4 h-4" />
           <span className="absolute top-1.5 right-1.5 w-2 h-2 rounded-full bg-brand-500 animate-pulse" />
         </button>
 
-        <div className="h-6 w-px bg-slate-800 hidden sm:block" />
+        <div className="h-6 w-px bg-slate-800 hidden sm:block shrink-0" />
 
         {/* User Profile Avatar & Dropdown Menu Trigger */}
         {user && (
-          <div className="relative" ref={profileRef}>
+          <div className="relative shrink-0" ref={profileRef}>
             <button
               type="button"
               onClick={() => setIsProfileOpen(!isProfileOpen)}
-              className="flex items-center gap-2.5 p-1.5 rounded-2xl hover:bg-slate-900/90 border border-transparent hover:border-slate-800 transition-all cursor-pointer group"
+              className="flex items-center gap-1 sm:gap-2 p-1 sm:p-1.5 rounded-2xl hover:bg-slate-900/90 border border-transparent hover:border-slate-800 transition-all cursor-pointer group"
             >
               <Avatar src={user.avatar} name={user.name} size="sm" status="online" />
               <div className="hidden lg:block text-left">

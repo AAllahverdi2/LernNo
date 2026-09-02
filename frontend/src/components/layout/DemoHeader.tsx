@@ -6,7 +6,7 @@ export const DemoHeader: React.FC = () => {
   const { role, user } = useAuth();
 
   return (
-    <div className="bg-slate-950 border-b border-slate-800/80 px-4 md:px-6 py-2 text-xs flex flex-wrap items-center justify-between gap-3 shadow-md z-30 relative">
+    <div className="hidden md:flex bg-slate-950 border-b border-slate-800/80 px-4 md:px-6 py-2 text-xs flex-wrap items-center justify-between gap-3 shadow-md z-30 relative">
       <div className="flex items-center gap-2.5 text-slate-300 overflow-hidden">
         <span className="flex h-2 w-2 relative shrink-0">
           <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>

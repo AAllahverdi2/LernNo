@@ -21,6 +21,7 @@ import {
   Edit3,
   Trash2,
   UserMinus,
+  ShieldCheck,
 } from 'lucide-react';
 import { AddVocabularyModal } from './AddVocabularyModal';
 import { InviteStudentModal } from './InviteStudentModal';
@@ -96,44 +97,50 @@ export const ClassDetail: React.FC = () => {
   return (
     <div className="space-y-6">
       {/* Top Breadcrumb Nav & Actions */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-        <div className="flex items-center gap-3">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3.5 pb-1">
+        <div className="flex items-center gap-3 min-w-0">
           <button
             onClick={() => navigate('/teacher/classes')}
-            className="p-2 rounded-xl text-slate-400 hover:text-white hover:bg-slate-900 border border-slate-800 transition-colors"
+            className="p-2 sm:p-2.5 rounded-2xl text-slate-400 hover:text-white hover:bg-slate-900 border border-slate-800 transition-colors shrink-0"
+            title="Qruplara qayıt"
           >
             <ArrowLeft className="w-4 h-4" />
           </button>
-          <div>
-            <div className="flex items-center gap-2">
-              <h1 className="text-2xl font-extrabold text-white">{classDetail.name}</h1>
+          <div className="min-w-0">
+            <div className="flex items-center gap-2 flex-wrap">
+              <h1 className="text-xl sm:text-2xl font-extrabold text-white tracking-tight truncate">{classDetail.name}</h1>
               <LevelBadge level={classDetail.level} />
             </div>
-            <p className="text-xs text-slate-400 mt-0.5">{classDetail.description || classDetail.schedule}</p>
+            <p className="text-xs text-slate-400 mt-0.5 truncate font-medium">
+              {classDetail.language} ➔ {classDetail.targetLanguage || 'Azərbaycan Dili'} • {classDetail.schedule || 'Qrafik təyin edilməyib'}
+            </p>
           </div>
         </div>
 
-        {/* Edit, Assign & Delete Buttons */}
-        <div className="flex items-center gap-2.5">
+        {/* Responsive Actions Bar */}
+        <div className="flex items-center gap-2 w-full sm:w-auto">
           <Button
             variant="gradient"
             size="sm"
+            className="flex-1 sm:flex-none justify-center text-xs font-bold shadow-md shadow-brand-500/20 py-2"
+            leftIcon={<ShieldCheck className="w-4 h-4" />}
             onClick={() => setIsAssignModalOpen(true)}
           >
-            🔒 Qrupa Lüğət Təyin Et
+            Lüğət Təyin Et
           </Button>
           <Button
             variant="outline"
             size="sm"
+            className="text-xs font-semibold shrink-0 py-2"
             leftIcon={<Edit3 className="w-3.5 h-3.5" />}
             onClick={() => setIsEditOpen(true)}
           >
-            Düzəliş Et
+            Düzəliş
           </Button>
           <Button
             variant="outline"
             size="sm"
-            className="border-rose-500/30 text-rose-400 hover:bg-rose-500/10 hover:border-rose-500/50"
+            className="border-rose-500/30 text-rose-400 hover:bg-rose-500/10 hover:border-rose-500/50 text-xs font-semibold shrink-0 py-2"
             leftIcon={<Trash2 className="w-3.5 h-3.5" />}
             onClick={() => setIsDeleteClassOpen(true)}
           >
@@ -149,23 +156,23 @@ export const ClassDetail: React.FC = () => {
       {activeTab === 'overview' && (
         <div className="space-y-6 animate-fadeIn">
           {/* Quick Metrics Bar */}
-          <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
-            <Card className="p-4">
-              <span className="text-[11px] font-semibold text-slate-400 uppercase">{t('classDetail.metrics.level')}</span>
-              <p className="text-2xl font-extrabold text-white mt-1">{classDetail.level}</p>
-            </Card>
-            <Card className="p-4">
-              <span className="text-[11px] font-semibold text-slate-400 uppercase">{t('classDetail.metrics.students')}</span>
-              <p className="text-2xl font-extrabold text-white mt-1">{classDetail.studentCount || 0}</p>
-            </Card>
-            <Card className="p-4">
-              <span className="text-[11px] font-semibold text-slate-400 uppercase">{t('classDetail.metrics.totalWords')}</span>
-              <p className="text-2xl font-extrabold text-white mt-1">{currentVocabCount}</p>
-            </Card>
-            <Card className="p-4">
-              <span className="text-[11px] font-semibold text-slate-400 uppercase">{t('classDetail.metrics.averageScore')}</span>
-              <p className="text-2xl font-extrabold text-emerald-400 mt-1">{classDetail.averageProgress || 0}%</p>
-            </Card>
+          <div className="grid grid-cols-2 lg:grid-cols-4 gap-2.5 sm:gap-4">
+            <div className="p-3.5 sm:p-4 rounded-2xl bg-slate-900/60 border border-slate-800/80 shadow-sm flex flex-col justify-between">
+              <span className="text-[10px] sm:text-[11px] font-bold text-slate-400 uppercase tracking-wider">{t('classDetail.metrics.level')}</span>
+              <p className="text-lg sm:text-2xl font-extrabold text-white mt-1">{classDetail.level}</p>
+            </div>
+            <div className="p-3.5 sm:p-4 rounded-2xl bg-slate-900/60 border border-slate-800/80 shadow-sm flex flex-col justify-between">
+              <span className="text-[10px] sm:text-[11px] font-bold text-slate-400 uppercase tracking-wider">{t('classDetail.metrics.students')}</span>
+              <p className="text-lg sm:text-2xl font-extrabold text-white mt-1">{classDetail.studentCount || 0}</p>
+            </div>
+            <div className="p-3.5 sm:p-4 rounded-2xl bg-slate-900/60 border border-slate-800/80 shadow-sm flex flex-col justify-between">
+              <span className="text-[10px] sm:text-[11px] font-bold text-slate-400 uppercase tracking-wider">{t('classDetail.metrics.totalWords')}</span>
+              <p className="text-lg sm:text-2xl font-extrabold text-brand-300 mt-1">{currentVocabCount}</p>
+            </div>
+            <div className="p-3.5 sm:p-4 rounded-2xl bg-slate-900/60 border border-slate-800/80 shadow-sm flex flex-col justify-between">
+              <span className="text-[10px] sm:text-[11px] font-bold text-slate-400 uppercase tracking-wider">{t('classDetail.metrics.averageScore')}</span>
+              <p className="text-lg sm:text-2xl font-extrabold text-emerald-400 mt-1">{classDetail.averageProgress || 0}%</p>
+            </div>
           </div>
 
           {/* Full Enrolled Students Management Section */}

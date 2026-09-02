@@ -22,7 +22,6 @@ export const DashboardLayout: React.FC = () => {
         <div className="flex-1 flex flex-col min-w-0">
           <TopNav
             onMenuClick={() => setIsSidebarOpen(true)}
-            onOpenAIGenerator={() => setIsAIGeneratorOpen(true)}
           />
           <main className="flex-1 p-4 md:p-8 max-w-7xl w-full mx-auto">
             <Outlet context={{ openAIGenerator: () => setIsAIGeneratorOpen(true) }} />

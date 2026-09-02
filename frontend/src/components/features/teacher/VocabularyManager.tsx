@@ -20,7 +20,6 @@ import {
   BookOpen,
   FileSpreadsheet,
   FolderOpen,
-  Globe,
   ArrowRight,
   ArrowLeft,
   Layers,
@@ -127,45 +126,8 @@ export const VocabularyManager: React.FC<VocabularyManagerProps> = ({ classId, i
       {/* SECTION 1: TOPIC CARDS OVERVIEW (When no specific topic is selected) */}
       {!selectedTopic && (
         <div className="space-y-6">
-          {/* Main Language Banner */}
-          <div className="p-4 sm:p-5 rounded-2xl bg-gradient-to-r from-indigo-950 via-slate-900 to-brand-950 border border-brand-500/30 flex flex-col md:flex-row md:items-center justify-between gap-4 shadow-xl">
-            <div className="flex items-center gap-3.5">
-              <div className="p-3 rounded-2xl bg-brand-500/20 text-brand-300 border border-brand-500/30 shrink-0">
-                <Globe className="w-5 h-5 text-brand-400" />
-              </div>
-              <div>
-                <div className="flex items-center gap-2">
-                  <span className="text-[10px] font-extrabold uppercase tracking-wider px-2.5 py-0.5 rounded-full bg-brand-500/20 text-brand-300 border border-brand-500/30">
-                    Aktiv Dil Cütlüyü
-                  </span>
-                  <span className="text-xs font-bold text-white">
-                    {selectedLanguage ? `${selectedLanguage} ➔ Azərbaycan Dili` : 'Bütün Dil Cütlükləri (Alman, İngilis, Rus, Çex...)'}
-                  </span>
-                </div>
-                <h2 className="text-base sm:text-lg font-bold text-white mt-1">Lüğət Və Mövzuların İdarə Olunması</h2>
-                <p className="text-xs text-slate-300 mt-0.5">
-                  Mövzunu seçərək minlərlə sözü yüngül lüğət siyahısı (list) formatında sürətlə vərəqləyin.
-                </p>
-              </div>
-            </div>
-
-            {!isStudent && (
-              <div className="shrink-0">
-                <Button
-                  variant="gradient"
-                  size="md"
-                  className="px-5 py-3 text-xs sm:text-sm font-extrabold shadow-xl"
-                  leftIcon={<Plus className="w-4 h-4" />}
-                  onClick={() => setIsCreateLangPairOpen(true)}
-                >
-                  ✨ + Yeni Lüğət Yarat
-                </Button>
-              </div>
-            )}
-          </div>
-
-          {/* Section Title & Clean Language Filter Dropdown */}
-          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pt-2">
+          {/* Section Title & Controls Bar */}
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pt-1">
             <div>
               <h3 className="text-base sm:text-lg font-bold text-white flex items-center gap-2">
                 <Layers className="w-5 h-5 text-indigo-400" />
@@ -176,26 +138,40 @@ export const VocabularyManager: React.FC<VocabularyManagerProps> = ({ classId, i
               </p>
             </div>
 
-            {/* Clean Language Filter Selector Dropdown */}
-            <div className="w-full sm:w-64 shrink-0">
-              <select
-                value={selectedLanguage}
-                onChange={(e) => {
-                  setSelectedLanguage(e.target.value);
-                  setSelectedTopic(null);
-                  setCurrentPage(1);
-                }}
-                className="w-full px-4 py-2.5 rounded-xl bg-slate-900 border border-slate-700/80 text-xs font-bold text-white focus:outline-none focus:border-brand-500 shadow-md cursor-pointer transition-all hover:border-slate-600"
-              >
-                <option value="" className="bg-slate-900 text-slate-300 font-bold">
-                  🌐 Bütün Dil Cütlükləri ({languages.length} dil)
-                </option>
-                {languagesData.map((lang) => (
-                  <option key={lang.name} value={lang.name} className="bg-slate-900 text-white font-bold">
-                    {lang.name} ({lang.count} söz)
+            <div className="flex items-center gap-2.5 flex-wrap sm:flex-nowrap">
+              {/* Clean Language Filter Selector Dropdown */}
+              <div className="w-full sm:w-60 shrink-0">
+                <select
+                  value={selectedLanguage}
+                  onChange={(e) => {
+                    setSelectedLanguage(e.target.value);
+                    setSelectedTopic(null);
+                    setCurrentPage(1);
+                  }}
+                  className="w-full px-4 py-2 rounded-xl bg-slate-900 border border-slate-700/80 text-xs font-bold text-white focus:outline-none focus:border-brand-500 shadow-md cursor-pointer transition-all hover:border-slate-600"
+                >
+                  <option value="" className="bg-slate-900 text-slate-300 font-bold">
+                    🌐 Bütün Dil Cütlükləri ({languages.length} dil)
                   </option>
-                ))}
-              </select>
+                  {languagesData.map((lang) => (
+                    <option key={lang.name} value={lang.name} className="bg-slate-900 text-white font-bold">
+                      {lang.name} ({lang.count} söz)
+                    </option>
+                  ))}
+                </select>
+              </div>
+
+              {!isStudent && (
+                <Button
+                  variant="gradient"
+                  size="sm"
+                  leftIcon={<Plus className="w-4 h-4" />}
+                  onClick={() => setIsCreateLangPairOpen(true)}
+                  className="shrink-0 text-xs font-bold px-3.5 py-2 shadow-md shadow-brand-500/20"
+                >
+                  + Yeni Lüğət
+                </Button>
+              )}
             </div>
           </div>
 
