@@ -4,7 +4,7 @@ import { Button } from '../../common/Button';
 import { classService } from '../../../services/classService';
 import { useAuth } from '../../../context/AuthContext';
 import { useQueryClient } from '@tanstack/react-query';
-import { BookOpen, Check, ShieldCheck, Sparkles } from 'lucide-react';
+import { BookOpen, Check, ShieldCheck } from 'lucide-react';
 
 interface AssignVocabularyModalProps {
   isOpen: boolean;

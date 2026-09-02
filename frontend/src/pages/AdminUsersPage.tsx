@@ -3,7 +3,6 @@ import { useAuth } from '../context/AuthContext';
 import { authService } from '../services/authService';
 import { Table, TableHeader, TableBody, TableRow, TableHead, TableCell } from '../components/common/Table';
 import { Avatar } from '../components/common/Avatar';
-import { Badge } from '../components/common/Badge';
 import { Button } from '../components/common/Button';
 import { ConfirmModal } from '../components/common/ConfirmModal';
 import { Toast } from '../components/common/Toast';

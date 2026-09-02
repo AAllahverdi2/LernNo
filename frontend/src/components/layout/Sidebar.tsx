@@ -1,19 +1,15 @@
 import React from 'react';
-import { NavLink, useNavigate } from 'react-router-dom';
+import { NavLink } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
 import { useTranslation } from '../../context/LanguageContext';
 import {
   LayoutDashboard,
   GraduationCap,
   BookOpen,
-  FileCheck2,
   Users,
   BarChart3,
-  Sparkles,
   Settings,
   Flame,
-  RotateCcw,
-  LogOut,
   BrainCircuit,
   ChevronRight,
   ShieldCheck,
@@ -25,9 +21,8 @@ interface SidebarProps {
 }
 
 export const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose }) => {
-  const { role, user, logout } = useAuth();
+  const { role, user } = useAuth();
   const { t } = useTranslation();
-  const navigate = useNavigate();
 
   const teacherNav = [
     { label: t('nav.dashboard'), path: '/teacher', icon: LayoutDashboard },
@@ -58,11 +53,6 @@ export const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose }) => {
   ];
 
   const navItems = role === 'admin' ? adminNav : role === 'teacher' ? teacherNav : studentNav;
-
-  const handleLogout = () => {
-    logout();
-    navigate('/login');
-  };
 
   return (
     <>

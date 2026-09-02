@@ -40,7 +40,7 @@ export const BatchImportModal: React.FC<BatchImportModalProps> = ({
 
   const [activeMode, setActiveMode] = useState<'paste' | 'table'>('paste');
   const [selectedTopic, setSelectedTopic] = useState(defaultTopic || existingTopics[0] || '');
-  const [selectedLanguage, setSelectedLanguage] = useState('Alman Dili');
+  const [selectedLanguage] = useState('Alman Dili');
   const [customTopic, setCustomTopic] = useState('');
   const [isNewTopic, setIsNewTopic] = useState(!defaultTopic && existingTopics.length === 0);
 

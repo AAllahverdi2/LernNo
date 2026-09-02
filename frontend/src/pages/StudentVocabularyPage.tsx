@@ -9,7 +9,7 @@ export const StudentVocabularyPage: React.FC = () => {
   const [searchParams, setSearchParams] = useSearchParams();
   const classIdParam = searchParams.get('classId');
 
-  const selectedClass = classes.find((c) => c.id === classIdParam) || classes[0];
+  const selectedClass = classes.find((c: any) => c.id === classIdParam) || classes[0];
 
   if (isLoading) {
     return (
@@ -36,7 +36,7 @@ export const StudentVocabularyPage: React.FC = () => {
       {/* If student is in multiple classes, show a tab/selector */}
       {classes.length > 1 && (
         <div className="flex items-center gap-2 p-1.5 rounded-2xl bg-slate-900/80 border border-slate-800 w-fit overflow-x-auto">
-          {classes.map((cls) => (
+          {classes.map((cls: any) => (
             <button
               key={cls.id}
               onClick={() => setSearchParams({ classId: cls.id })}

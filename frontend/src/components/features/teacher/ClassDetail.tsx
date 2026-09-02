@@ -45,7 +45,6 @@ export const ClassDetail: React.FC = () => {
   const [isEditOpen, setIsEditOpen] = useState(false);
   const [isAssignModalOpen, setIsAssignModalOpen] = useState(false);
 
-  // Modals & Toast State
   const [isDeleteClassOpen, setIsDeleteClassOpen] = useState(false);
   const [isDeletingClass, setIsDeletingClass] = useState(false);
   const [studentToRemove, setStudentToRemove] = useState<{ id: string; name: string } | null>(null);
@@ -54,6 +53,7 @@ export const ClassDetail: React.FC = () => {
 
   const confirmDeleteClass = async () => {
     if (!token || !classId) return;
+    setIsDeletingClass(true);
     setIsDeleteClassOpen(false);
     navigate('/teacher/classes');
     try {
@@ -61,6 +61,8 @@ export const ClassDetail: React.FC = () => {
       queryClient.invalidateQueries({ queryKey: ['classes'], refetchType: 'none' });
     } catch (err: any) {
       console.error('Delete class error:', err);
+    } finally {
+      setIsDeletingClass(false);
     }
   };
 

@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
 import { useVocabulary } from '../../../hooks/useVocabulary';
-import { useTranslation } from '../../../context/LanguageContext';
 import { Button } from '../../common/Button';
 import { Card } from '../../common/Card';
 import { ArticleBadge } from '../../common/Badge';
@@ -25,8 +24,6 @@ import {
   ArrowRight,
   ArrowLeft,
   Layers,
-  ArrowRightLeft,
-  Sparkles,
   ShieldCheck,
 } from 'lucide-react';
 
@@ -36,7 +33,6 @@ interface VocabularyManagerProps {
 }
 
 export const VocabularyManager: React.FC<VocabularyManagerProps> = ({ classId, isMaster }) => {
-  const { t } = useTranslation();
   const { role } = useAuth();
   const isStudent = role === 'student';
 
@@ -558,7 +554,7 @@ export const VocabularyManager: React.FC<VocabularyManagerProps> = ({ classId, i
         <BatchImportModal
           isOpen={isBatchOpen}
           onClose={() => setIsBatchOpen(false)}
-          classId={classId}
+          classId={classId || ''}
           existingTopics={categories}
           defaultTopic={selectedTopic || targetTopicForBatch || undefined}
         />

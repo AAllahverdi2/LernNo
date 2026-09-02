@@ -60,6 +60,8 @@ export interface VocabularyWord {
   exampleTranslation?: string;
   difficulty: DifficultyLevel;
   status: WordStatus;
+  language?: string;
+  targetLanguage?: string;
   masteredByStudentCount?: number;
   phonetic?: string;
   audioUrl?: string;

@@ -25,7 +25,7 @@ export const vocabularyService = {
     return [];
   },
 
-  async getVocabularySets(classId?: string): Promise<VocabularySet[]> {
+  async getVocabularySets(_classId?: string): Promise<VocabularySet[]> {
     return [];
   },
 

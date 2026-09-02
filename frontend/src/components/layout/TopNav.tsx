@@ -1,6 +1,6 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Menu, Search, Bell, Sparkles, Sun, Moon, LogOut, Settings, User as UserIcon, ChevronDown, ShieldCheck } from 'lucide-react';
+import { Menu, Search, Bell, Sparkles, Sun, Moon, LogOut, Settings, ChevronDown, ShieldCheck } from 'lucide-react';
 import { useAuth } from '../../context/AuthContext';
 import { useTranslation } from '../../context/LanguageContext';
 import { useTheme } from '../../context/ThemeContext';
